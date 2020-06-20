@@ -105,14 +105,15 @@ namespace WebcamLightMeter
             List<double> xLine = new List<double>();
             List<double> yLine = new List<double>();
 
+            int yMin = (yPoint - size/2 < 0) ? 0 : (yPoint - size/2);
+            int yMax = (yPoint + size/2 > height) ? height : (yPoint + size/2);
+            int xMin = (xPoint - size/2 < 0) ? 0 : (xPoint - size/2);
+            int xMax = (xPoint + size/2 > width) ? width : (xPoint + size/2);
+
             unsafe
             {
                 byte* p = (byte*)(void*)scan0;
 
-                int yMin = 0; // (yPoint - size < 0) ? 0 : (yPoint - size);
-                int yMax = height; // (yPoint + size > height) ? height : (yPoint + size);
-                int xMin = 0; // (xPoint - size < 0) ? 0 : (xPoint - size);
-                int xMax = width; // (xPoint + size > width) ? width : (xPoint + size);
                 for (int y = yMin; y < yMax; y++)
                 {
                     for (int x = xMin; x < xMax; x++)
@@ -130,7 +131,7 @@ namespace WebcamLightMeter
             tmpBmp.UnlockBits(srcData);
             tmpBmp.Dispose();
 
-            double max = xLine[yPoint]; //is the same as yLine[xPoint];
+            double max = xLine[size / 2];
 
             double xMu = xPoint;
             double xVariance = 0;

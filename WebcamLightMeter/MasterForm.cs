@@ -4,7 +4,7 @@ using AForge.Video.DirectShow;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Web.UI.DataVisualization.Charting;
+using System.IO;
 using System.Windows.Forms;
 
 namespace WebcamLightMeter
@@ -15,16 +15,16 @@ namespace WebcamLightMeter
         {
             InitializeComponent();
         }
-
-        //private SaveFileDialog saveAvi;
+        
         private FilterInfoCollection _videoCaptureDevices;
         private VideoCaptureDevice _finalVideo;
-        //private readonly string butStop = "";
         private int _gaussRefreshTime = 0;
         private double _gaussLevel = 0;
         private double _gaussSize = 0;
         private Timer _gaussTimer;
         private System.Drawing.Point _gaussPosition;
+        private bool _acquireData;
+        private Dictionary<string, List<float>> _data;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -95,7 +95,7 @@ namespace WebcamLightMeter
                     {
                         _gaussSize = val;
                         streamToolStripMenuItem.HideDropDown();
-                        ChangeTimerParameters(_gaussPosition.X, _gaussPosition.Y);
+                        ChangeTimerGaussParameters(_gaussPosition.X, _gaussPosition.Y);
                     }
                     else
                         MessageBox.Show("Cannot parse value for size", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -157,26 +157,26 @@ namespace WebcamLightMeter
             //else
             //{
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            //pictureBoxStream.Image = bitmap;
+            pictureBoxStream.Image = bitmap;
 
             BeginInvoke((Action)(() =>
             {
                 pictureBoxStream.Image = bitmap;
-            //    Dictionary<char, List<int>> histograms = Analyzer.GetHistogram(bitmap);
-            //    int size = histograms['R'].Count;
-            //    chartRGB.Series["RSeries"].Points.Clear();
-            //    chartRGB.Series["GSeries"].Points.Clear();
-            //    chartRGB.Series["BSeries"].Points.Clear();
-            //
-            //    for (int i = 0; i < size; i++)
-            //    {
-            //        chartRGB.Series["RSeries"].Points.AddXY(i, histograms['R'][i]);
-            //        chartRGB.Series["GSeries"].Points.AddXY(i, histograms['G'][i]);
-            //        chartRGB.Series["BSeries"].Points.AddXY(i, histograms['B'][i]);
-            //    }
-            //
-            //    double lightness = Analyzer.GetAverageLightness(bitmap);
-            //    chartLightness.Series["Lightness"].Points.AddY(lightness);
+                Dictionary<char, List<int>> histograms = Analyzer.GetHistogram(bitmap);
+                int size = histograms['R'].Count;
+                chartRGB.Series["RSeries"].Points.Clear();
+                chartRGB.Series["GSeries"].Points.Clear();
+                chartRGB.Series["BSeries"].Points.Clear();
+
+                for (int i = 0; i < size; i++)
+                {
+                    chartRGB.Series["RSeries"].Points.AddXY(i, histograms['R'][i]);
+                    chartRGB.Series["GSeries"].Points.AddXY(i, histograms['G'][i]);
+                    chartRGB.Series["BSeries"].Points.AddXY(i, histograms['B'][i]);
+                }
+
+                //double lightness = Analyzer.GetAverageLightness(bitmap);
+                //chartLightness.Series["Lightness"].Points.AddY(lightness);
             }));
             //}
         }
@@ -253,37 +253,35 @@ namespace WebcamLightMeter
                 return;
 
             //Calculate the position on bitmap
-            int x0 = 0;
-            int y0 = 0;
-            float bitmapW = (float)pictureBoxStream.Width;
-            float bitmapH = bitmapW * (float)bitmap.Height / (float)bitmap.Width;
+            float x0 = 0;
+            float y0 = 0;
+            float bitmapW = pictureBoxStream.Width;
+            float bitmapH = pictureBoxStream.Height;
             if ((float)pictureBoxStream.Width / (float)pictureBoxStream.Height < (float)bitmap.Width / (float)bitmap.Height)
-                y0 = (int)(pictureBoxStream.Height - bitmapH) / 2;
+            {
+                bitmapW = (float)pictureBoxStream.Width;
+                bitmapH = bitmapW * (float)bitmap.Height / (float)bitmap.Width;
+                y0 = (float)(pictureBoxStream.Height - bitmapH) / 2;
+            }
             else if ((float)pictureBoxStream.Width / (float)pictureBoxStream.Height > (float)bitmap.Width / (float)bitmap.Height)
-                x0 = (int)(pictureBoxStream.Width - bitmapW) / 2;
+            {
+                bitmapH = (float)pictureBoxStream.Height;
+                bitmapW = bitmapH * (float)bitmap.Width / (float)bitmap.Height;
+                x0 = (float)(pictureBoxStream.Width - bitmapW) / 2;
+            }
 
-            int x = ((MouseEventArgs)e).Location.X - x0;
-            int y = ((MouseEventArgs)e).Location.Y - y0;
+            float x = ((MouseEventArgs)e).Location.X - x0;
+            float y = ((MouseEventArgs)e).Location.Y - y0;
 
-            x *= bitmap.Width / pictureBoxStream.Width;
-            y *= bitmap.Height / pictureBoxStream.Height;
+            //Real coordinate in image
+            x *= bitmap.Width / bitmapW;
+            y *= bitmap.Height / bitmapH;
 
-            x += (int)_gaussSize;
-            y += (int)_gaussSize;
-
-            Bitmap bmpImage = new Bitmap(bitmap);
-            pictureBoxSnap.Image = null;
-            bmpImage = bmpImage.Clone(new Rectangle(new System.Drawing.Point(x, y), new Size((int)_gaussSize, (int)_gaussSize)), bmpImage.PixelFormat);
-            Graphics g = Graphics.FromImage(bmpImage);
-            g.DrawLine(Pens.Black, 0, 0, bmpImage.Width, bmpImage.Height);
-            g.DrawLine(Pens.Black, 0, bmpImage.Width, bmpImage.Height, 0);
-            pictureBoxSnap.Image = bmpImage;
-            
-            _gaussPosition = new System.Drawing.Point(x, y);
-            ChangeTimerParameters(x, y);
+            _gaussPosition = new System.Drawing.Point((int)x, (int)y);
+            ChangeTimerGaussParameters((int)x, (int)y);
         }
 
-        private void ChangeTimerParameters(int x, int y)
+        private void ChangeTimerGaussParameters(int x, int y)
         {
             _gaussTimer?.Stop();
             _gaussTimer?.Dispose();
@@ -294,6 +292,13 @@ namespace WebcamLightMeter
                 BeginInvoke((Action)(() =>
                 {
                     Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
+
+                    //Refresh crop
+                    Bitmap bmpImage = new Bitmap(bitmap);
+                    Rectangle rect = new Rectangle((int)((x - _gaussSize / 2) < 0 ? 0 : (x - _gaussSize / 2)), (int)((y - _gaussSize / 2) < 0 ? 0 : (y - _gaussSize / 2)), (int)_gaussSize, (int)_gaussSize);
+                    bmpImage = bmpImage.Clone(rect, bmpImage.PixelFormat);
+                    pictureBoxSnap.Image = bmpImage;
+
                     Dictionary<string, List<double>> fitting = Analyzer.GaussianFittingXY(bitmap, x, y, (int)_gaussSize);
                     chartXLine.Series["XLine"].Points.Clear();
                     chartXLine.Series["GXLine"].Points.Clear();
@@ -313,6 +318,44 @@ namespace WebcamLightMeter
                 }));
             };
             _gaussTimer.Start();
+        }
+
+        private void DataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Timer acquireDataTimer;
+            if (dataToolStripMenuItem.Text == "Start aqcuire data")
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string directory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    string fileName = Path.GetFileName(saveFileDialog.FileName);
+                    dataToolStripMenuItem.Text = "Stop acquire data";
+                    
+                    _acquireData = true;
+                    _data = new Dictionary<string, List<float>>();
+
+                    acquireDataTimer = new Timer();
+                    acquireDataTimer.Interval = 500;
+                    acquireDataTimer.Tick += (s, ea) =>
+                    {
+                        if (dataToolStripMenuItem.Text == "Stop acquire data")
+                            dataToolStripMenuItem.Text = "";
+                        else if (dataToolStripMenuItem.Text == "")
+                            dataToolStripMenuItem.Text = "Stop acquire data";
+                    };
+                    acquireDataTimer.Start();
+                }
+            }
+            else if (dataToolStripMenuItem.Text == "Stop acquire data")
+            {
+                _acquireData = false;
+                dataToolStripMenuItem.Text = "Saving...";
+
+                throw new NotImplementedException();
+
+                dataToolStripMenuItem.Text = "Start acquire data";
+            }
         }
     }
 }
