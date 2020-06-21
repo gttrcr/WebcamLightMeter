@@ -61,11 +61,15 @@
             this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
             this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox3 = new System.Windows.Forms.ToolStripTextBox();
+            this.followLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.disableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartRGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartLightnessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
@@ -78,7 +82,6 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.chartXLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartYLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -198,7 +201,8 @@
             this.streamToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.levelToolStripMenuItem,
             this.refreshTimeToolStripMenuItem,
-            this.sizeToolStripMenuItem});
+            this.sizeToolStripMenuItem,
+            this.followLightToolStripMenuItem});
             this.streamToolStripMenuItem.Name = "streamToolStripMenuItem";
             this.streamToolStripMenuItem.Size = new System.Drawing.Size(70, 24);
             this.streamToolStripMenuItem.Text = "Stream";
@@ -245,6 +249,27 @@
             this.toolStripTextBox3.Name = "toolStripTextBox3";
             this.toolStripTextBox3.Size = new System.Drawing.Size(100, 27);
             // 
+            // followLightToolStripMenuItem
+            // 
+            this.followLightToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.enableToolStripMenuItem,
+            this.disableToolStripMenuItem});
+            this.followLightToolStripMenuItem.Name = "followLightToolStripMenuItem";
+            this.followLightToolStripMenuItem.Size = new System.Drawing.Size(208, 26);
+            this.followLightToolStripMenuItem.Text = "Follow light";
+            // 
+            // enableToolStripMenuItem
+            // 
+            this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
+            this.enableToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
+            this.enableToolStripMenuItem.Text = "Enable";
+            // 
+            // disableToolStripMenuItem
+            // 
+            this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
+            this.disableToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
+            this.disableToolStripMenuItem.Text = "Disable";
+            // 
             // chartToolStripMenuItem
             // 
             this.chartToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -280,6 +305,13 @@
             this.chartLightnessToolStripMenuItem.Name = "chartLightnessToolStripMenuItem";
             this.chartLightnessToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
             this.chartLightnessToolStripMenuItem.Text = "Chart Lightness";
+            // 
+            // dataToolStripMenuItem
+            // 
+            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
+            this.dataToolStripMenuItem.Size = new System.Drawing.Size(141, 24);
+            this.dataToolStripMenuItem.Text = "Start acquire data";
+            this.dataToolStripMenuItem.Click += new System.EventHandler(this.DataToolStripMenuItem_Click);
             // 
             // splitContainer2
             // 
@@ -510,13 +542,6 @@
             this.chartYLine.TabIndex = 26;
             this.chartYLine.Text = "chart1";
             // 
-            // dataToolStripMenuItem
-            // 
-            this.dataToolStripMenuItem.Name = "dataToolStripMenuItem";
-            this.dataToolStripMenuItem.Size = new System.Drawing.Size(141, 24);
-            this.dataToolStripMenuItem.Text = "Start acquire data";
-            this.dataToolStripMenuItem.Click += new System.EventHandler(this.DataToolStripMenuItem_Click);
-            // 
             // MasterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -556,7 +581,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartLightness)).EndInit();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
-            //((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartXLine)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartYLine)).EndInit();
@@ -601,5 +626,8 @@
         private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox3;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem followLightToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
     }
 }

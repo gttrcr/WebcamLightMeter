@@ -1,6 +1,6 @@
-﻿using Accord;
-using AForge.Video;
+﻿using AForge.Video;
 using AForge.Video.DirectShow;
+using LightAnalyzer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,7 +24,8 @@ namespace WebcamLightMeter
         private Timer _gaussTimer;
         private System.Drawing.Point _gaussPosition;
         private bool _acquireData;
-        private Dictionary<string, List<float>> _data;
+        private Dictionary<string, List<double>> _data;
+        private bool _followLight;
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -39,9 +40,6 @@ namespace WebcamLightMeter
         {
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.CenterScreen;
-
-            if (toolStripComboBox1.Items.Count > 0)
-                toolStripComboBox1.SelectedIndex = 0;
 
             logToolStripMenuItem.Click += (sender, e) =>
             {
@@ -102,7 +100,22 @@ namespace WebcamLightMeter
                 }
             };
 
+            enableToolStripMenuItem.Click += (sender, e) =>
+            {
+                _followLight = true;
+                enableToolStripMenuItem.Checked = true;
+                disableToolStripMenuItem.Checked = false;
+            };
+
+            disableToolStripMenuItem.Click += (sender, e) =>
+            {
+                _followLight = false;
+                enableToolStripMenuItem.Checked = false;
+                disableToolStripMenuItem.Checked = true;
+            };
+
             logToolStripMenuItem.PerformClick();
+            disableToolStripMenuItem.PerformClick();
             chartRGB.DoubleClick += ChartRGB_DoubleClick;
             chartRGB.ChartAreas[0].AxisX.Minimum = 0;
             chartRGB.ChartAreas[0].AxisX.Maximum = 255;
@@ -113,10 +126,29 @@ namespace WebcamLightMeter
             splitContainer5.SplitterDistance = splitContainer5.ClientSize.Height / 3;
             splitContainer6.SplitterDistance = splitContainer6.ClientSize.Height / 2;
             pictureBoxStream.Click += PictureBoxStream_Click;
+            chartXLine.DoubleClick += ChartXLine_DoubleClick;
+            chartYLine.DoubleClick += ChartYLine_DoubleClick;
+            
             toolStripTextBox2.Text = "500";
             toolStripTextBox3.Text = "200";
             _gaussRefreshTime = 500;
             _gaussSize = 200;
+
+            if (toolStripComboBox1.Items.Count > 0)
+            {
+                toolStripComboBox1.SelectedIndex = 0;
+                openCamToolStripMenuItem.PerformClick();
+            }
+        }
+
+        private void ChartYLine_DoubleClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ChartXLine_DoubleClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void ChartRGB_DoubleClick(object sender, EventArgs e)
@@ -157,12 +189,12 @@ namespace WebcamLightMeter
             //else
             //{
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            pictureBoxStream.Image = bitmap;
+            //pictureBoxStream.Image = bitmap;
 
             BeginInvoke((Action)(() =>
             {
                 pictureBoxStream.Image = bitmap;
-                Dictionary<char, List<int>> histograms = Analyzer.GetHistogram(bitmap);
+                Dictionary<char, List<int>> histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
                 int size = histograms['R'].Count;
                 chartRGB.Series["RSeries"].Points.Clear();
                 chartRGB.Series["GSeries"].Points.Clear();
@@ -174,9 +206,18 @@ namespace WebcamLightMeter
                     chartRGB.Series["GSeries"].Points.AddXY(i, histograms['G'][i]);
                     chartRGB.Series["BSeries"].Points.AddXY(i, histograms['B'][i]);
                 }
+                
+                chartLightness.Series["Lightness"].Points.AddY(lightness);
+                if (chartLightness.Series["Lightness"].Points.Count > 500)
+                    chartLightness.Series["Lightness"].Points.RemoveAt(0);
 
-                //double lightness = Analyzer.GetAverageLightness(bitmap);
-                //chartLightness.Series["Lightness"].Points.AddY(lightness);
+                if (_acquireData)
+                {
+                    if (_data.ContainsKey("Lightness"))
+                        _data["Lightness"].Add(lightness);
+                    else
+                        _data.Add("Lightness", new List<double>() { lightness });
+                }
             }));
             //}
         }
@@ -315,25 +356,32 @@ namespace WebcamLightMeter
                         chartYLine.Series["YLine"].Points.AddXY(i, fitting["yLine"][i]);
                         chartYLine.Series["GYLine"].Points.AddXY(i, fitting["gYLine"][i]);
                     }
+
+                    if(_followLight)
+                    {
+
+                    }
                 }));
             };
             _gaussTimer.Start();
         }
 
+        private string _directory = "";
         private void DataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Timer acquireDataTimer;
-            if (dataToolStripMenuItem.Text == "Start aqcuire data")
+            string fileName = "";
+            if (dataToolStripMenuItem.Text == "Start acquire data")
             {
                 SaveFileDialog saveFileDialog = new SaveFileDialog();
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string directory = Path.GetDirectoryName(saveFileDialog.FileName);
-                    string fileName = Path.GetFileName(saveFileDialog.FileName);
+                    _directory = Path.GetDirectoryName(saveFileDialog.FileName);
+                    fileName = Path.GetFileName(saveFileDialog.FileName);
                     dataToolStripMenuItem.Text = "Stop acquire data";
                     
                     _acquireData = true;
-                    _data = new Dictionary<string, List<float>>();
+                    _data = new Dictionary<string, List<double>>();
 
                     acquireDataTimer = new Timer();
                     acquireDataTimer.Interval = 500;
@@ -352,7 +400,10 @@ namespace WebcamLightMeter
                 _acquireData = false;
                 dataToolStripMenuItem.Text = "Saving...";
 
-                throw new NotImplementedException();
+                string strData = "";
+                for (int i = 0; i < _data["Lightness"].Count; i++)
+                    strData += _data["Lightness"][i] + Environment.NewLine;
+                File.WriteAllText(_directory + "\\Lightness.txt", strData);
 
                 dataToolStripMenuItem.Text = "Start acquire data";
             }
