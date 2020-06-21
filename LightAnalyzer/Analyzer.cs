@@ -36,7 +36,7 @@ namespace LightAnalyzer
                         rList[p[idx + 2]]++;
                         gList[p[idx + 1]]++;
                         bList[p[idx + 0]]++;
-                        
+
                         lum += (0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
                     }
                 }
@@ -49,7 +49,7 @@ namespace LightAnalyzer
             ret.Add('R', rList);
             ret.Add('G', gList);
             ret.Add('B', bList);
-            
+
             lum /= (bitmap.Width * bitmap.Height);
             lum /= 255.0;
 
@@ -96,27 +96,25 @@ namespace LightAnalyzer
             tmpBmp.UnlockBits(srcData);
             tmpBmp.Dispose();
 
-            double max = xLine[size / 2];
-
-            double xMu = xPoint;
-            double xVariance = 0;
-            for (int i = 0; i < xLine.Count; i++)
-                xVariance += Math.Pow(xLine[i] - max, 2);
-            xVariance /= xLine.Count;
-
-            double yMu = yPoint;
-            double yVariance = 0;
-            for (int i = 0; i < yLine.Count; i++)
-                yVariance += Math.Pow(yLine[i] - max, 2);
-            yVariance /= yLine.Count;
+            //gauss X line
+            double xLineMax = xLine.Max();
+            double xAvg = xLine.Average();
+            double sumOfSquaresOfDifferences = xLine.Select(val => (val - xAvg) * (val - xAvg)).Sum();
+            double xVariance = Math.Sqrt(sumOfSquaresOfDifferences / xLine.Count);
 
             List<double> gXLine = new List<double>();
             for (int i = 0; i < xLine.Count; i++)
-                gXLine.Add(max * Math.Exp(-Math.Pow(i - xMu, 2) / (2 * Math.Pow(xVariance, 2))));
+                gXLine.Add(xLineMax * Math.Exp(-Math.Pow(i - xAvg, 2) / (2 * Math.Pow(xVariance, 2))));
+
+            //gauss Y line
+            double yLineMax = yLine.Max();
+            double yAvg = yLine.Average();
+            sumOfSquaresOfDifferences = xLine.Select(val => (val - yAvg) * (val - yAvg)).Sum();
+            double yVariance = Math.Sqrt(sumOfSquaresOfDifferences / yLine.Count);
 
             List<double> gYLine = new List<double>();
             for (int i = 0; i < yLine.Count; i++)
-                gYLine.Add(max * Math.Exp(-Math.Pow(i - yMu, 2) / (2 * Math.Pow(yVariance, 2))));
+                gYLine.Add(yLineMax * Math.Exp(-Math.Pow(i - yAvg, 2) / (2 * Math.Pow(yVariance, 2))));
 
             Dictionary<string, List<double>> ret = new Dictionary<string, List<double>>();
             ret.Add("xLine", xLine);

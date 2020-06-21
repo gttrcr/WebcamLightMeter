@@ -119,6 +119,8 @@ namespace WebcamLightMeter
             chartRGB.DoubleClick += ChartRGB_DoubleClick;
             chartRGB.ChartAreas[0].AxisX.Minimum = 0;
             chartRGB.ChartAreas[0].AxisX.Maximum = 255;
+            chartLightness.ChartAreas[0].AxisX.Minimum = 0;
+            chartLightness.ChartAreas[0].AxisX.Maximum = 500;
             chartLightness.DoubleClick += ChartLightness_DoubleClick;
             splitContainer2.SplitterDistance = splitContainer2.ClientSize.Width / 2;
             splitContainer3.SplitterDistance = splitContainer3.ClientSize.Width / 2;
@@ -141,14 +143,30 @@ namespace WebcamLightMeter
             }
         }
 
-        private void ChartYLine_DoubleClick(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void ChartXLine_DoubleClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            ChartXYForm chartXYForm = new ChartXYForm(chartXLine, chartYLine);
+            chartXYForm.FormClosing += (s, ea) =>
+            {
+                splitContainer3.Panel1.Controls.Clear();
+                splitContainer3.Panel1.Controls.Add(chartXLine);
+                splitContainer3.Panel2.Controls.Clear();
+                splitContainer3.Panel2.Controls.Add(chartYLine);
+            };
+            chartXYForm.Show();
+        }
+
+        private void ChartYLine_DoubleClick(object sender, EventArgs e)
+        {
+            ChartXYForm chartXYForm = new ChartXYForm(chartXLine, chartYLine);
+            chartXYForm.FormClosing += (s, ea) =>
+            {
+                splitContainer3.Panel1.Controls.Clear();
+                splitContainer3.Panel1.Controls.Add(chartXLine);
+                splitContainer3.Panel2.Controls.Clear();
+                splitContainer3.Panel2.Controls.Add(chartYLine);
+            };
+            chartXYForm.Show();
         }
 
         private void ChartRGB_DoubleClick(object sender, EventArgs e)
@@ -156,6 +174,7 @@ namespace WebcamLightMeter
             Form formRGB = new Form();
             formRGB.FormClosing += (s, ea) =>
             {
+                splitContainer5.Panel1.Controls.Clear();
                 splitContainer5.Panel1.Controls.Add(chartRGB);
             };
             formRGB.Controls.Add(chartRGB);
@@ -169,7 +188,8 @@ namespace WebcamLightMeter
             Form formLightness = new Form();
             formLightness.FormClosing += (s, ea) =>
             {
-                splitContainer5.Panel2.Controls.Add(chartLightness);
+                splitContainer6.Panel1.Controls.Clear();
+                splitContainer6.Panel1.Controls.Add(chartLightness);
             };
             formLightness.Controls.Add(chartLightness);
             formLightness.WindowState = FormWindowState.Maximized;
@@ -179,17 +199,11 @@ namespace WebcamLightMeter
 
         private void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
         {
-            //if (butStop == "Stop Record")
-            //{
-            //    //pictureBoxStream.Image = (Bitmap)eventArgs.Frame.Clone();
-            //
-            //    //FileWriter.WriteVideoFrame(image);
-            //    //AVIwriter.AddFrame(video);
-            //}
-            //else
-            //{
+            //pictureBoxStream.Image = (Bitmap)eventArgs.Frame.Clone();
+            //FileWriter.WriteVideoFrame(image);
+            //AVIwriter.AddFrame(video);
+            
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-            //pictureBoxStream.Image = bitmap;
 
             BeginInvoke((Action)(() =>
             {
@@ -219,7 +233,6 @@ namespace WebcamLightMeter
                         _data.Add("Lightness", new List<double>() { lightness });
                 }
             }));
-            //}
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -236,9 +249,7 @@ namespace WebcamLightMeter
                 Application.Exit();
             }
             else
-            {
                 Application.Exit();
-            }
         }
 
         private void OpenCamToolStripMenuItem_Click(object sender, EventArgs e)
@@ -260,7 +271,7 @@ namespace WebcamLightMeter
 
         private void TakeAPictureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBoxSnap.Image = (Bitmap)pictureBoxStream.Image.Clone();
+            //pictureBoxSnap.Image = (Bitmap)pictureBoxStream.Image.Clone();
         }
 
         private void SaveThePictureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -283,8 +294,8 @@ namespace WebcamLightMeter
 
         private void ClearPictureBoxToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            pictureBoxSnap.Image = null;
-            pictureBoxSnap.Invalidate();
+            //pictureBoxSnap.Image = null;
+            //pictureBoxSnap.Invalidate();
         }
 
         private void PictureBoxStream_Click(object sender, EventArgs e)
@@ -317,6 +328,8 @@ namespace WebcamLightMeter
             //Real coordinate in image
             x *= bitmap.Width / bitmapW;
             y *= bitmap.Height / bitmapH;
+
+            textBoxPosition.Text = "X: " + x.ToString() + "; " + "Y: " + y.ToString();
 
             _gaussPosition = new System.Drawing.Point((int)x, (int)y);
             ChangeTimerGaussParameters((int)x, (int)y);

@@ -82,6 +82,7 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.chartXLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartYLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.textBoxPosition = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -358,6 +359,7 @@
             // 
             // splitContainer4.Panel2
             // 
+            this.splitContainer4.Panel2.Controls.Add(this.textBoxPosition);
             this.splitContainer4.Panel2.Controls.Add(this.pictureBoxSnap);
             this.splitContainer4.Size = new System.Drawing.Size(540, 241);
             this.splitContainer4.SplitterDistance = 253;
@@ -542,6 +544,15 @@
             this.chartYLine.TabIndex = 26;
             this.chartYLine.Text = "chart1";
             // 
+            // textBoxPosition
+            // 
+            this.textBoxPosition.Dock = System.Windows.Forms.DockStyle.Top;
+            this.textBoxPosition.Location = new System.Drawing.Point(0, 0);
+            this.textBoxPosition.Name = "textBoxPosition";
+            this.textBoxPosition.ReadOnly = true;
+            this.textBoxPosition.Size = new System.Drawing.Size(279, 22);
+            this.textBoxPosition.TabIndex = 17;
+            // 
             // MasterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -565,6 +576,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer4.Panel1.ResumeLayout(false);
             this.splitContainer4.Panel2.ResumeLayout(false);
+            this.splitContainer4.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer4)).EndInit();
             this.splitContainer4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStream)).EndInit();
@@ -581,7 +593,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartLightness)).EndInit();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            //((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartXLine)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartYLine)).EndInit();
@@ -629,5 +641,6 @@
         private System.Windows.Forms.ToolStripMenuItem followLightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
+        private System.Windows.Forms.TextBox textBoxPosition;
     }
 }
