@@ -40,7 +40,7 @@
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             this.splitContainer1.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer1.SplitterDistance = 413;
+            this.splitContainer1.SplitterDistance = 383;
             this.splitContainer1.TabIndex = 0;
             // 
             // ChartXYForm

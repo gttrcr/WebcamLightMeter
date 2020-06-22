@@ -131,6 +131,8 @@ namespace WebcamLightMeter
             pictureBoxStream.Click += PictureBoxStream_Click;
             chartXLine.DoubleClick += ChartXLine_DoubleClick;
             chartYLine.DoubleClick += ChartYLine_DoubleClick;
+            chartXLine.Dock = DockStyle.Fill;
+            chartYLine.Dock = DockStyle.Fill;
 
             toolStripTextBox2.Text = "500";
             toolStripTextBox3.Text = "200";

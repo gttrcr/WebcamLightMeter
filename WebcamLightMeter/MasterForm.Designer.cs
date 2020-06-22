@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series13 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series14 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series15 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series16 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.filterInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +55,9 @@
             this.clearPictureBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.startCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.loadCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripComboBox2 = new System.Windows.Forms.ToolStripComboBox();
             this.streamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.levelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
@@ -84,9 +87,6 @@
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.chartXLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chartYLine = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.startCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripComboBox2 = new System.Windows.Forms.ToolStripComboBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -132,7 +132,7 @@
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1023, 28);
             this.menuStrip1.TabIndex = 24;
-            this.menuStrip1.Text = "menuStrip1";
+            this.menuStrip1.Text = "menuStrip";
             // 
             // fileToolStripMenuItem
             // 
@@ -210,6 +210,26 @@
             this.calibrationToolStripMenuItem.Name = "calibrationToolStripMenuItem";
             this.calibrationToolStripMenuItem.Size = new System.Drawing.Size(96, 24);
             this.calibrationToolStripMenuItem.Text = "Calibration";
+            // 
+            // startCalibrationToolStripMenuItem
+            // 
+            this.startCalibrationToolStripMenuItem.Name = "startCalibrationToolStripMenuItem";
+            this.startCalibrationToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
+            this.startCalibrationToolStripMenuItem.Text = "Start calibration";
+            this.startCalibrationToolStripMenuItem.Click += new System.EventHandler(this.StartCalibrationToolStripMenuItem_Click);
+            // 
+            // loadCalibrationToolStripMenuItem
+            // 
+            this.loadCalibrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripComboBox2});
+            this.loadCalibrationToolStripMenuItem.Name = "loadCalibrationToolStripMenuItem";
+            this.loadCalibrationToolStripMenuItem.Size = new System.Drawing.Size(200, 26);
+            this.loadCalibrationToolStripMenuItem.Text = "Load calibration";
+            // 
+            // toolStripComboBox2
+            // 
+            this.toolStripComboBox2.Name = "toolStripComboBox2";
+            this.toolStripComboBox2.Size = new System.Drawing.Size(121, 28);
             // 
             // streamToolStripMenuItem
             // 
@@ -344,7 +364,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.splitContainer5);
             this.splitContainer2.Size = new System.Drawing.Size(1023, 708);
             this.splitContainer2.SplitterDistance = 544;
-            this.splitContainer2.TabIndex = 25;
+            this.splitContainer2.TabIndex = 26;
             // 
             // splitContainer1
             // 
@@ -357,7 +377,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer4);
             this.splitContainer1.Size = new System.Drawing.Size(540, 704);
-            this.splitContainer1.SplitterDistance = 241;
+            this.splitContainer1.SplitterDistance = 240;
             this.splitContainer1.TabIndex = 0;
             // 
             // splitContainer4
@@ -375,7 +395,7 @@
             // 
             this.splitContainer4.Panel2.Controls.Add(this.textBoxPosition);
             this.splitContainer4.Panel2.Controls.Add(this.pictureBoxSnap);
-            this.splitContainer4.Size = new System.Drawing.Size(540, 241);
+            this.splitContainer4.Size = new System.Drawing.Size(540, 240);
             this.splitContainer4.SplitterDistance = 253;
             this.splitContainer4.TabIndex = 21;
             // 
@@ -386,7 +406,7 @@
             this.pictureBoxStream.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxStream.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxStream.Name = "pictureBoxStream";
-            this.pictureBoxStream.Size = new System.Drawing.Size(249, 237);
+            this.pictureBoxStream.Size = new System.Drawing.Size(249, 236);
             this.pictureBoxStream.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxStream.TabIndex = 10;
             this.pictureBoxStream.TabStop = false;
@@ -407,7 +427,7 @@
             this.pictureBoxSnap.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxSnap.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxSnap.Name = "pictureBoxSnap";
-            this.pictureBoxSnap.Size = new System.Drawing.Size(279, 237);
+            this.pictureBoxSnap.Size = new System.Drawing.Size(279, 236);
             this.pictureBoxSnap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxSnap.TabIndex = 16;
             this.pictureBoxSnap.TabStop = false;
@@ -428,41 +448,43 @@
             // 
             this.splitContainer5.Panel2.Controls.Add(this.splitContainer6);
             this.splitContainer5.Size = new System.Drawing.Size(475, 708);
-            this.splitContainer5.SplitterDistance = 259;
+            this.splitContainer5.SplitterDistance = 258;
             this.splitContainer5.TabIndex = 0;
             // 
             // chartRGB
             // 
-            chartArea5.Name = "ChartArea1";
-            this.chartRGB.ChartAreas.Add(chartArea5);
+            chartArea1.Name = "ChartArea1";
+            this.chartRGB.ChartAreas.Add(chartArea1);
             this.chartRGB.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend5.Name = "Legend1";
-            this.chartRGB.Legends.Add(legend5);
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Name = "Legend1";
+            this.chartRGB.Legends.Add(legend1);
             this.chartRGB.Location = new System.Drawing.Point(0, 0);
             this.chartRGB.Name = "chartRGB";
-            series9.BorderWidth = 2;
-            series9.ChartArea = "ChartArea1";
-            series9.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series9.Color = System.Drawing.Color.Red;
-            series9.Legend = "Legend1";
-            series9.Name = "RSeries";
-            series10.BorderWidth = 2;
-            series10.ChartArea = "ChartArea1";
-            series10.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series10.Color = System.Drawing.Color.Green;
-            series10.Legend = "Legend1";
-            series10.Name = "GSeries";
-            series11.BorderWidth = 2;
-            series11.ChartArea = "ChartArea1";
-            series11.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series11.Color = System.Drawing.Color.Blue;
-            series11.Legend = "Legend1";
-            series11.Name = "BSeries";
-            series11.YValuesPerPoint = 3;
-            this.chartRGB.Series.Add(series9);
-            this.chartRGB.Series.Add(series10);
-            this.chartRGB.Series.Add(series11);
-            this.chartRGB.Size = new System.Drawing.Size(471, 255);
+            series1.BorderWidth = 2;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.Red;
+            series1.Legend = "Legend1";
+            series1.Name = "RSeries";
+            series2.BorderWidth = 2;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = System.Drawing.Color.Green;
+            series2.Legend = "Legend1";
+            series2.Name = "GSeries";
+            series3.BorderWidth = 2;
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series3.Color = System.Drawing.Color.Blue;
+            series3.Legend = "Legend1";
+            series3.Name = "BSeries";
+            series3.YValuesPerPoint = 3;
+            this.chartRGB.Series.Add(series1);
+            this.chartRGB.Series.Add(series2);
+            this.chartRGB.Series.Add(series3);
+            this.chartRGB.Size = new System.Drawing.Size(471, 254);
             this.chartRGB.TabIndex = 22;
             this.chartRGB.Text = "chart1";
             // 
@@ -481,25 +503,27 @@
             // splitContainer6.Panel2
             // 
             this.splitContainer6.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer6.Size = new System.Drawing.Size(475, 445);
-            this.splitContainer6.SplitterDistance = 217;
+            this.splitContainer6.Size = new System.Drawing.Size(475, 446);
+            this.splitContainer6.SplitterDistance = 216;
             this.splitContainer6.TabIndex = 0;
             // 
             // chartLightness
             // 
-            chartArea6.Name = "ChartArea1";
-            this.chartLightness.ChartAreas.Add(chartArea6);
+            chartArea2.Name = "ChartArea1";
+            this.chartLightness.ChartAreas.Add(chartArea2);
             this.chartLightness.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend6.Name = "Legend1";
-            this.chartLightness.Legends.Add(legend6);
+            legend2.Alignment = System.Drawing.StringAlignment.Center;
+            legend2.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend2.Name = "Legend1";
+            this.chartLightness.Legends.Add(legend2);
             this.chartLightness.Location = new System.Drawing.Point(0, 0);
             this.chartLightness.Name = "chartLightness";
-            series12.ChartArea = "ChartArea1";
-            series12.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series12.Legend = "Legend1";
-            series12.Name = "Lightness";
-            this.chartLightness.Series.Add(series12);
-            this.chartLightness.Size = new System.Drawing.Size(471, 213);
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series4.Legend = "Legend1";
+            series4.Name = "Lightness";
+            this.chartLightness.Series.Add(series4);
+            this.chartLightness.Size = new System.Drawing.Size(471, 212);
             this.chartLightness.TabIndex = 25;
             this.chartLightness.Text = "chart1";
             // 
@@ -517,75 +541,57 @@
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.chartYLine);
-            this.splitContainer3.Size = new System.Drawing.Size(475, 224);
-            this.splitContainer3.SplitterDistance = 232;
+            this.splitContainer3.Size = new System.Drawing.Size(475, 226);
+            this.splitContainer3.SplitterDistance = 227;
             this.splitContainer3.TabIndex = 0;
             // 
             // chartXLine
             // 
-            chartArea7.Name = "ChartArea1";
-            this.chartXLine.ChartAreas.Add(chartArea7);
-            this.chartXLine.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend7.Name = "Legend1";
-            this.chartXLine.Legends.Add(legend7);
-            this.chartXLine.Location = new System.Drawing.Point(0, 0);
+            chartArea3.Name = "ChartArea1";
+            this.chartXLine.ChartAreas.Add(chartArea3);
+            legend3.Alignment = System.Drawing.StringAlignment.Center;
+            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend3.Name = "Legend1";
+            this.chartXLine.Legends.Add(legend3);
+            this.chartXLine.Location = new System.Drawing.Point(20, 19);
             this.chartXLine.Name = "chartXLine";
-            series13.ChartArea = "ChartArea1";
-            series13.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series13.Legend = "Legend1";
-            series13.Name = "XLine";
-            series14.ChartArea = "ChartArea1";
-            series14.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series14.Legend = "Legend1";
-            series14.Name = "GXLine";
-            this.chartXLine.Series.Add(series13);
-            this.chartXLine.Series.Add(series14);
-            this.chartXLine.Size = new System.Drawing.Size(228, 220);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Legend = "Legend1";
+            series5.Name = "XLine";
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series6.Legend = "Legend1";
+            series6.Name = "GXLine";
+            this.chartXLine.Series.Add(series5);
+            this.chartXLine.Series.Add(series6);
+            this.chartXLine.Size = new System.Drawing.Size(190, 152);
             this.chartXLine.TabIndex = 26;
             this.chartXLine.Text = "chart1";
             // 
             // chartYLine
             // 
-            chartArea8.Name = "ChartArea1";
-            this.chartYLine.ChartAreas.Add(chartArea8);
-            this.chartYLine.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend8.Name = "Legend1";
-            this.chartYLine.Legends.Add(legend8);
-            this.chartYLine.Location = new System.Drawing.Point(0, 0);
+            chartArea4.Name = "ChartArea1";
+            this.chartYLine.ChartAreas.Add(chartArea4);
+            legend4.Alignment = System.Drawing.StringAlignment.Center;
+            legend4.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend4.Name = "Legend1";
+            this.chartYLine.Legends.Add(legend4);
+            this.chartYLine.Location = new System.Drawing.Point(16, 19);
             this.chartYLine.Name = "chartYLine";
-            series15.ChartArea = "ChartArea1";
-            series15.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series15.Legend = "Legend1";
-            series15.Name = "YLine";
-            series16.ChartArea = "ChartArea1";
-            series16.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series16.Legend = "Legend1";
-            series16.Name = "GYLine";
-            this.chartYLine.Series.Add(series15);
-            this.chartYLine.Series.Add(series16);
-            this.chartYLine.Size = new System.Drawing.Size(235, 220);
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series7.Legend = "Legend1";
+            series7.Name = "YLine";
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series8.Legend = "Legend1";
+            series8.Name = "GYLine";
+            this.chartYLine.Series.Add(series7);
+            this.chartYLine.Series.Add(series8);
+            this.chartYLine.Size = new System.Drawing.Size(203, 160);
             this.chartYLine.TabIndex = 26;
             this.chartYLine.Text = "chart1";
-            // 
-            // startCalibrationToolStripMenuItem
-            // 
-            this.startCalibrationToolStripMenuItem.Name = "startCalibrationToolStripMenuItem";
-            this.startCalibrationToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.startCalibrationToolStripMenuItem.Text = "Start calibration";
-            this.startCalibrationToolStripMenuItem.Click += new System.EventHandler(this.StartCalibrationToolStripMenuItem_Click);
-            // 
-            // loadCalibrationToolStripMenuItem
-            // 
-            this.loadCalibrationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripComboBox2});
-            this.loadCalibrationToolStripMenuItem.Name = "loadCalibrationToolStripMenuItem";
-            this.loadCalibrationToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.loadCalibrationToolStripMenuItem.Text = "Load calibration";
-            // 
-            // toolStripComboBox2
-            // 
-            this.toolStripComboBox2.Name = "toolStripComboBox2";
-            this.toolStripComboBox2.Size = new System.Drawing.Size(121, 28);
             // 
             // MasterForm
             // 
@@ -627,7 +633,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartLightness)).EndInit();
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
-            //((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartXLine)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartYLine)).EndInit();
@@ -655,18 +661,6 @@
         private System.Windows.Forms.ToolStripMenuItem takeAPictureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveThePictureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearPictureBoxToolStripMenuItem;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.SplitContainer splitContainer4;
-        private System.Windows.Forms.PictureBox pictureBoxStream;
-        private System.Windows.Forms.PictureBox pictureBoxSnap;
-        private System.Windows.Forms.SplitContainer splitContainer5;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartRGB;
-        private System.Windows.Forms.SplitContainer splitContainer6;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartLightness;
-        private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartXLine;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartYLine;
         private System.Windows.Forms.ToolStripMenuItem refreshTimeToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
         private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
@@ -675,10 +669,22 @@
         private System.Windows.Forms.ToolStripMenuItem followLightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
-        private System.Windows.Forms.TextBox textBoxPosition;
         private System.Windows.Forms.ToolStripMenuItem calibrationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startCalibrationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadCalibrationToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox2;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.PictureBox pictureBoxStream;
+        private System.Windows.Forms.TextBox textBoxPosition;
+        private System.Windows.Forms.PictureBox pictureBoxSnap;
+        private System.Windows.Forms.SplitContainer splitContainer5;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartRGB;
+        private System.Windows.Forms.SplitContainer splitContainer6;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartLightness;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartXLine;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartYLine;
+        private System.Windows.Forms.SplitContainer splitContainer3;
     }
 }

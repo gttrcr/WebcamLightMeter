@@ -74,6 +74,15 @@ namespace WebcamLightMeter
                 string str = calibrationName + "#" + rSquared + "#" + intercept + "#" + slope + Environment.NewLine;
                 File.WriteAllText(NameAndDefine.calibrationFile, str);
             }
+
+            chartCalibration.Series["Submitted values"].Points.Clear();
+            chartCalibration.Series["Linear dependence"].Points.Clear();
+
+            for (int i = 0; i < lxValues.Count; i++)
+            {
+                chartCalibration.Series["Submitted values"].Points.AddXY(lxValues[i], calculatedLxValues[i]);
+                chartCalibration.Series["Linear dependence"].Points.AddXY(lxValues[i], slope * lxValues[i] + intercept);
+            }
         }
     }
 }

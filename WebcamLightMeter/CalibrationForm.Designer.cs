@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.buttonSubmit = new System.Windows.Forms.Button();
@@ -37,56 +39,38 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buttonComplete = new System.Windows.Forms.Button();
             this.dataGridViewMeasure = new System.Windows.Forms.DataGridView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.RealLuxValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReferenceSnap = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.chartCalibration = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMeasure)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartCalibration)).BeginInit();
             this.SuspendLayout();
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(800, 450);
-            this.tabControl1.TabIndex = 6;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.splitContainer1);
-            this.tabPage1.Location = new System.Drawing.Point(4, 25);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(792, 421);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // splitContainer1
             // 
             this.splitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-            this.splitContainer1.Size = new System.Drawing.Size(786, 415);
-            this.splitContainer1.SplitterDistance = 390;
-            this.splitContainer1.TabIndex = 1;
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.chartCalibration);
+            this.splitContainer1.Size = new System.Drawing.Size(800, 450);
+            this.splitContainer1.SplitterDistance = 396;
+            this.splitContainer1.TabIndex = 2;
             // 
             // splitContainer2
             // 
@@ -106,16 +90,16 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.dataGridViewMeasure);
-            this.splitContainer2.Size = new System.Drawing.Size(390, 415);
-            this.splitContainer2.SplitterDistance = 162;
+            this.splitContainer2.Size = new System.Drawing.Size(396, 450);
+            this.splitContainer2.SplitterDistance = 86;
             this.splitContainer2.TabIndex = 0;
             // 
             // buttonSubmit
             // 
             this.buttonSubmit.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonSubmit.Location = new System.Drawing.Point(0, 112);
+            this.buttonSubmit.Location = new System.Drawing.Point(0, 36);
             this.buttonSubmit.Name = "buttonSubmit";
-            this.buttonSubmit.Size = new System.Drawing.Size(386, 23);
+            this.buttonSubmit.Size = new System.Drawing.Size(392, 23);
             this.buttonSubmit.TabIndex = 3;
             this.buttonSubmit.Text = "Submit measure";
             this.buttonSubmit.UseVisualStyleBackColor = true;
@@ -140,9 +124,9 @@
             // buttonComplete
             // 
             this.buttonComplete.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonComplete.Location = new System.Drawing.Point(0, 135);
+            this.buttonComplete.Location = new System.Drawing.Point(0, 59);
             this.buttonComplete.Name = "buttonComplete";
-            this.buttonComplete.Size = new System.Drawing.Size(386, 23);
+            this.buttonComplete.Size = new System.Drawing.Size(392, 23);
             this.buttonComplete.TabIndex = 1;
             this.buttonComplete.Text = "Complete calibration";
             this.buttonComplete.UseVisualStyleBackColor = true;
@@ -159,18 +143,8 @@
             this.dataGridViewMeasure.Name = "dataGridViewMeasure";
             this.dataGridViewMeasure.RowHeadersWidth = 51;
             this.dataGridViewMeasure.RowTemplate.Height = 24;
-            this.dataGridViewMeasure.Size = new System.Drawing.Size(386, 245);
+            this.dataGridViewMeasure.Size = new System.Drawing.Size(392, 356);
             this.dataGridViewMeasure.TabIndex = 2;
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(792, 421);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // RealLuxValue
             // 
@@ -188,17 +162,41 @@
             this.ReferenceSnap.ReadOnly = true;
             this.ReferenceSnap.Width = 125;
             // 
+            // chartCalibration
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chartCalibration.ChartAreas.Add(chartArea1);
+            this.chartCalibration.Dock = System.Windows.Forms.DockStyle.Fill;
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Name = "Legend1";
+            this.chartCalibration.Legends.Add(legend1);
+            this.chartCalibration.Location = new System.Drawing.Point(0, 0);
+            this.chartCalibration.Name = "chartCalibration";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series1.Legend = "Legend1";
+            series1.Name = "Submitted values";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Legend = "Legend1";
+            series2.Name = "Linear dependence";
+            this.chartCalibration.Series.Add(series1);
+            this.chartCalibration.Series.Add(series2);
+            this.chartCalibration.Size = new System.Drawing.Size(396, 446);
+            this.chartCalibration.TabIndex = 0;
+            this.chartCalibration.Text = "chart1";
+            // 
             // CalibrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.splitContainer1);
             this.Name = "CalibrationForm";
             this.Text = "CalibrationForm";
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -207,23 +205,22 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMeasure)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartCalibration)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
+        private System.Windows.Forms.Button buttonSubmit;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button buttonComplete;
         private System.Windows.Forms.DataGridView dataGridViewMeasure;
-        private System.Windows.Forms.Button buttonSubmit;
         private System.Windows.Forms.DataGridViewTextBoxColumn RealLuxValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReferenceSnap;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartCalibration;
     }
 }
