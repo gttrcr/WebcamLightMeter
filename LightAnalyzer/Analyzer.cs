@@ -37,7 +37,7 @@ namespace LightAnalyzer
                         gList[p[idx + 1]]++;
                         bList[p[idx + 0]]++;
 
-                        lum += (0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
+                        lum += (0.2989 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
                     }
                 }
             }
@@ -79,17 +79,19 @@ namespace LightAnalyzer
             {
                 byte* p = (byte*)(void*)scan0;
 
+                for (int x = xMin; x < xMax; x++)
+                {
+                    int idx = (yPoint * stride) + x * bppModifier;
+                    yLine.Add(0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
+                }
+
                 for (int y = yMin; y < yMax; y++)
                 {
-                    for (int x = xMin; x < xMax; x++)
-                    {
-                        int idx = (y * stride) + x * bppModifier;
-
-                        if (y == yPoint)
-                            yLine.Add(0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
-                        else if (x == xPoint)
-                            xLine.Add(0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
-                    }
+                    //for (int x = xMin; x < xMax; x++)
+                    //{
+                    int idx = (y * stride) + xPoint * bppModifier;
+                    xLine.Add(0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
+                    //}
                 }
             }
 

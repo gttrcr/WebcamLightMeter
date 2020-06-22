@@ -16,7 +16,7 @@ namespace WebcamLightMeter
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MasterForm());
+            Application.Run(new SplashScreen());
         }
     }
 }

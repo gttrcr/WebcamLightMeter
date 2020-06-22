@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace WebcamLightMeter
@@ -15,7 +16,7 @@ namespace WebcamLightMeter
         {
             InitializeComponent();
         }
-        
+
         private FilterInfoCollection _videoCaptureDevices;
         private VideoCaptureDevice _finalVideo;
         private int _gaussRefreshTime = 0;
@@ -130,17 +131,34 @@ namespace WebcamLightMeter
             pictureBoxStream.Click += PictureBoxStream_Click;
             chartXLine.DoubleClick += ChartXLine_DoubleClick;
             chartYLine.DoubleClick += ChartYLine_DoubleClick;
-            
+
             toolStripTextBox2.Text = "500";
             toolStripTextBox3.Text = "200";
             _gaussRefreshTime = 500;
             _gaussSize = 200;
-
-            if (toolStripComboBox1.Items.Count > 0)
+            
+            if (File.Exists(NameAndDefine.calibrationFile))
             {
-                toolStripComboBox1.SelectedIndex = 0;
-                openCamToolStripMenuItem.PerformClick();
+                string str = File.ReadAllText(NameAndDefine.calibrationFile);
+                string[] cals = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                List<string[]> calsComplete = cals.Select(x => x.Split('#')).ToList();
+                for (int i = 0; i < calsComplete.Count; i++)
+                    toolStripComboBox2.Items.Add(calsComplete[i][0]);
             }
+
+            Timer delayAfterLoad = new Timer();
+            delayAfterLoad.Interval = 2000;
+            delayAfterLoad.Tick += (sender, e) =>
+            {
+                delayAfterLoad.Stop();
+                delayAfterLoad.Dispose();
+                if (toolStripComboBox1.Items.Count > 0)
+                {
+                    toolStripComboBox1.SelectedIndex = 0;
+                    openCamToolStripMenuItem.PerformClick();
+                }
+            };
+            delayAfterLoad.Start();
         }
 
         private void ChartXLine_DoubleClick(object sender, EventArgs e)
@@ -202,7 +220,7 @@ namespace WebcamLightMeter
             //pictureBoxStream.Image = (Bitmap)eventArgs.Frame.Clone();
             //FileWriter.WriteVideoFrame(image);
             //AVIwriter.AddFrame(video);
-            
+
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
 
             BeginInvoke((Action)(() =>
@@ -220,7 +238,7 @@ namespace WebcamLightMeter
                     chartRGB.Series["GSeries"].Points.AddXY(i, histograms['G'][i]);
                     chartRGB.Series["BSeries"].Points.AddXY(i, histograms['B'][i]);
                 }
-                
+
                 chartLightness.Series["Lightness"].Points.AddY(lightness);
                 if (chartLightness.Series["Lightness"].Points.Count > 500)
                     chartLightness.Series["Lightness"].Points.RemoveAt(0);
@@ -370,7 +388,7 @@ namespace WebcamLightMeter
                         chartYLine.Series["GYLine"].Points.AddXY(i, fitting["gYLine"][i]);
                     }
 
-                    if(_followLight)
+                    if (_followLight)
                     {
 
                     }
@@ -382,7 +400,6 @@ namespace WebcamLightMeter
         private string _directory = "";
         private void DataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Timer acquireDataTimer;
             string fileName = "";
             if (dataToolStripMenuItem.Text == "Start acquire data")
             {
@@ -392,20 +409,9 @@ namespace WebcamLightMeter
                     _directory = Path.GetDirectoryName(saveFileDialog.FileName);
                     fileName = Path.GetFileName(saveFileDialog.FileName);
                     dataToolStripMenuItem.Text = "Stop acquire data";
-                    
+
                     _acquireData = true;
                     _data = new Dictionary<string, List<double>>();
-
-                    acquireDataTimer = new Timer();
-                    acquireDataTimer.Interval = 500;
-                    acquireDataTimer.Tick += (s, ea) =>
-                    {
-                        if (dataToolStripMenuItem.Text == "Stop acquire data")
-                            dataToolStripMenuItem.Text = "";
-                        else if (dataToolStripMenuItem.Text == "")
-                            dataToolStripMenuItem.Text = "Stop acquire data";
-                    };
-                    acquireDataTimer.Start();
                 }
             }
             else if (dataToolStripMenuItem.Text == "Stop acquire data")
@@ -420,6 +426,12 @@ namespace WebcamLightMeter
 
                 dataToolStripMenuItem.Text = "Start acquire data";
             }
+        }
+
+        private void StartCalibrationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CalibrationForm calibrationForm = new CalibrationForm(pictureBoxStream);
+            calibrationForm.Show();
         }
     }
 }
