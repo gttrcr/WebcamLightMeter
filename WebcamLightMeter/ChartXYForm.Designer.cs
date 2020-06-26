@@ -1,4 +1,4 @@
-﻿namespace WebcamLightMeter
+﻿namespace GtkWebcamLightMeter
 {
     partial class ChartXYForm
     {

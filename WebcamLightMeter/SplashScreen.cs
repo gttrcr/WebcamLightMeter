@@ -1,19 +1,23 @@
-﻿using System.Media;
+﻿using System.IO;
+using System.Media;
 using System.Windows.Forms;
 
-namespace WebcamLightMeter
+namespace GtkWebcamLightMeter
 {
     public partial class SplashScreen : Form
     {
         public SplashScreen()
         {
             InitializeComponent();
-            SoundPlayer player = new SoundPlayer();
-            player.SoundLocation = "..\\..\\LightMeter.wav";
-            player.Play();
+            if (File.Exists(NameAndDefine.splashScreenSound))
+            {
+                SoundPlayer player = new SoundPlayer();
+                player.SoundLocation = NameAndDefine.splashScreenSound;
+                player.Play();
+            }
 
             Timer timer = new Timer();
-            timer.Interval = 1000;
+            timer.Interval = 1500;
             timer.Tick += Timer_Tick;
             timer.Start();
         }

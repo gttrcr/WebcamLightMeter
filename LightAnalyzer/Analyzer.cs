@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
+using Point = Accord.Point;
 
 namespace LightAnalyzer
 {
@@ -51,7 +52,7 @@ namespace LightAnalyzer
             ret.Add('B', bList);
 
             lum /= (bitmap.Width * bitmap.Height);
-            lum /= 255.0;
+            //lum /= 255.0;
 
             return ret;
         }
@@ -87,11 +88,8 @@ namespace LightAnalyzer
 
                 for (int y = yMin; y < yMax; y++)
                 {
-                    //for (int x = xMin; x < xMax; x++)
-                    //{
                     int idx = (y * stride) + xPoint * bppModifier;
                     xLine.Add(0.299 * p[idx + 2] + 0.587 * p[idx + 1] + 0.114 * p[idx]);
-                    //}
                 }
             }
 
@@ -127,9 +125,33 @@ namespace LightAnalyzer
             return ret;
         }
 
-        public static void FollowLightDot(Bitmap bitmap, int xPoint, int yPoint)
+        public static Point FollowLight(Bitmap bitmap, int xPoint, int yPoint)
         {
+            var tmpBmp = new Bitmap(bitmap);
+            var width = bitmap.Width;
+            var height = bitmap.Height;
+            var bppModifier = bitmap.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
 
+            var srcData = tmpBmp.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            var stride = srcData.Stride;
+            var scan0 = srcData.Scan0;
+
+            int yMin = 0;
+            int yMax = height;
+            int xMin = 0;
+            int xMax = width;
+
+            unsafe
+            {
+                byte* p = (byte*)(void*)scan0;
+                //
+            }
+
+            tmpBmp.UnlockBits(srcData);
+            tmpBmp.Dispose();
+
+            Point point = new Point();
+            return point;
         }
     }
 }

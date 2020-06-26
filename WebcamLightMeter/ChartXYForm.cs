@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace WebcamLightMeter
+namespace GtkWebcamLightMeter
 {
     public partial class ChartXYForm : Form
     {

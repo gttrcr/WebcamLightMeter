@@ -1,4 +1,4 @@
-﻿namespace WebcamLightMeter
+﻿namespace GtkWebcamLightMeter
 {
     partial class CalibrationForm
     {
@@ -28,12 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.buttonSubmit = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -41,17 +41,14 @@
             this.dataGridViewMeasure = new System.Windows.Forms.DataGridView();
             this.RealLuxValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReferenceSnap = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.chartCalibration = new System.Windows.Forms.DataVisualization.Charting.Chart();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMeasure)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartCalibration)).BeginInit();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -64,10 +61,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.chartCalibration);
             this.splitContainer1.Size = new System.Drawing.Size(800, 450);
             this.splitContainer1.SplitterDistance = 396;
             this.splitContainer1.TabIndex = 2;
@@ -82,6 +75,10 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.textBox3);
+            this.splitContainer2.Panel1.Controls.Add(this.label3);
+            this.splitContainer2.Panel1.Controls.Add(this.textBox2);
+            this.splitContainer2.Panel1.Controls.Add(this.label2);
             this.splitContainer2.Panel1.Controls.Add(this.buttonSubmit);
             this.splitContainer2.Panel1.Controls.Add(this.textBox1);
             this.splitContainer2.Panel1.Controls.Add(this.label1);
@@ -91,13 +88,45 @@
             // 
             this.splitContainer2.Panel2.Controls.Add(this.dataGridViewMeasure);
             this.splitContainer2.Size = new System.Drawing.Size(396, 450);
-            this.splitContainer2.SplitterDistance = 86;
+            this.splitContainer2.SplitterDistance = 144;
             this.splitContainer2.TabIndex = 0;
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(128, 31);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(170, 22);
+            this.textBox3.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 34);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(126, 17);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Sensor size (mm2)";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(128, 59);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(170, 22);
+            this.textBox2.TabIndex = 2;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 62);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(114, 17);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Calibration name";
             // 
             // buttonSubmit
             // 
             this.buttonSubmit.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonSubmit.Location = new System.Drawing.Point(0, 36);
+            this.buttonSubmit.Location = new System.Drawing.Point(0, 94);
             this.buttonSubmit.Name = "buttonSubmit";
             this.buttonSubmit.Size = new System.Drawing.Size(392, 23);
             this.buttonSubmit.TabIndex = 3;
@@ -124,10 +153,10 @@
             // buttonComplete
             // 
             this.buttonComplete.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.buttonComplete.Location = new System.Drawing.Point(0, 59);
+            this.buttonComplete.Location = new System.Drawing.Point(0, 117);
             this.buttonComplete.Name = "buttonComplete";
             this.buttonComplete.Size = new System.Drawing.Size(392, 23);
-            this.buttonComplete.TabIndex = 1;
+            this.buttonComplete.TabIndex = 4;
             this.buttonComplete.Text = "Complete calibration";
             this.buttonComplete.UseVisualStyleBackColor = true;
             this.buttonComplete.Click += new System.EventHandler(this.ButtonComplete_Click);
@@ -143,7 +172,7 @@
             this.dataGridViewMeasure.Name = "dataGridViewMeasure";
             this.dataGridViewMeasure.RowHeadersWidth = 51;
             this.dataGridViewMeasure.RowTemplate.Height = 24;
-            this.dataGridViewMeasure.Size = new System.Drawing.Size(392, 356);
+            this.dataGridViewMeasure.Size = new System.Drawing.Size(392, 298);
             this.dataGridViewMeasure.TabIndex = 2;
             // 
             // RealLuxValue
@@ -162,31 +191,6 @@
             this.ReferenceSnap.ReadOnly = true;
             this.ReferenceSnap.Width = 125;
             // 
-            // chartCalibration
-            // 
-            chartArea1.Name = "ChartArea1";
-            this.chartCalibration.ChartAreas.Add(chartArea1);
-            this.chartCalibration.Dock = System.Windows.Forms.DockStyle.Fill;
-            legend1.Alignment = System.Drawing.StringAlignment.Center;
-            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend1.Name = "Legend1";
-            this.chartCalibration.Legends.Add(legend1);
-            this.chartCalibration.Location = new System.Drawing.Point(0, 0);
-            this.chartCalibration.Name = "chartCalibration";
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
-            series1.Legend = "Legend1";
-            series1.Name = "Submitted values";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Legend = "Legend1";
-            series2.Name = "Linear dependence";
-            this.chartCalibration.Series.Add(series1);
-            this.chartCalibration.Series.Add(series2);
-            this.chartCalibration.Size = new System.Drawing.Size(396, 446);
-            this.chartCalibration.TabIndex = 0;
-            this.chartCalibration.Text = "chart1";
-            // 
             // CalibrationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -196,7 +200,6 @@
             this.Name = "CalibrationForm";
             this.Text = "CalibrationForm";
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.splitContainer2.Panel1.ResumeLayout(false);
@@ -205,7 +208,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewMeasure)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartCalibration)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -221,6 +223,9 @@
         private System.Windows.Forms.DataGridView dataGridViewMeasure;
         private System.Windows.Forms.DataGridViewTextBoxColumn RealLuxValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReferenceSnap;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartCalibration;
+        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.Label label3;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AForge.Video;
 using AForge.Video.DirectShow;
+using ControlChart;
 using LightAnalyzer;
 using System;
 using System.Collections.Generic;
@@ -7,8 +8,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Point = Accord.Point;
 
-namespace WebcamLightMeter
+namespace GtkWebcamLightMeter
 {
     public partial class MasterForm : Form
     {
@@ -16,6 +18,13 @@ namespace WebcamLightMeter
         {
             InitializeComponent();
         }
+
+        private Chart chartRGB;
+        private List<double> lightnessDataSet;
+        private Chart chartLightness;
+        private Chart chartXLine;
+        private Chart chartYLine;
+        private Dictionary<char, List<int>> histograms;
 
         private FilterInfoCollection _videoCaptureDevices;
         private VideoCaptureDevice _finalVideo;
@@ -25,7 +34,7 @@ namespace WebcamLightMeter
         private Timer _gaussTimer;
         private System.Drawing.Point _gaussPosition;
         private bool _acquireData;
-        private Dictionary<string, List<double>> _data;
+        private Dictionary<string, List<Tuple<string, double>>> _data;
         private bool _followLight;
 
         private void Form1_Load(object sender, EventArgs e)
@@ -46,14 +55,14 @@ namespace WebcamLightMeter
             {
                 logToolStripMenuItem.Checked = true;
                 linearToolStripMenuItem.Checked = false;
-                chartRGB.ChartAreas[0].AxisY.IsLogarithmic = true;
+                //chartRGB.ChartAreas[0].AxisY.IsLogarithmic = true;
             };
 
             linearToolStripMenuItem.Click += (sender, e) =>
             {
                 linearToolStripMenuItem.Checked = true;
                 logToolStripMenuItem.Checked = false;
-                chartRGB.ChartAreas[0].AxisY.IsLogarithmic = false;
+                //chartRGB.ChartAreas[0].AxisY.IsLogarithmic = false;
             };
 
             toolStripTextBox1.KeyDown += (sender, e) =>
@@ -117,33 +126,31 @@ namespace WebcamLightMeter
 
             logToolStripMenuItem.PerformClick();
             disableToolStripMenuItem.PerformClick();
-            chartRGB.DoubleClick += ChartRGB_DoubleClick;
-            chartRGB.ChartAreas[0].AxisX.Minimum = 0;
-            chartRGB.ChartAreas[0].AxisX.Maximum = 255;
-            chartLightness.ChartAreas[0].AxisX.Minimum = 0;
-            chartLightness.ChartAreas[0].AxisX.Maximum = 500;
-            chartLightness.DoubleClick += ChartLightness_DoubleClick;
+            //chartRGB.ChartAreas[0].AxisX.Minimum = 0;
+            //chartRGB.ChartAreas[0].AxisX.Maximum = 255;
+            //chartLightness.ChartAreas[0].AxisX.Minimum = 0;
+            //chartLightness.ChartAreas[0].AxisX.Maximum = 500;
             splitContainer2.SplitterDistance = splitContainer2.ClientSize.Width / 2;
             splitContainer3.SplitterDistance = splitContainer3.ClientSize.Width / 2;
             splitContainer4.SplitterDistance = 2 * splitContainer4.ClientSize.Width / 3;
             splitContainer5.SplitterDistance = splitContainer5.ClientSize.Height / 3;
             splitContainer6.SplitterDistance = splitContainer6.ClientSize.Height / 2;
             pictureBoxStream.Click += PictureBoxStream_Click;
-            chartXLine.DoubleClick += ChartXLine_DoubleClick;
-            chartYLine.DoubleClick += ChartYLine_DoubleClick;
-            chartXLine.Dock = DockStyle.Fill;
-            chartYLine.Dock = DockStyle.Fill;
+            //chartXLine.DoubleClick += ChartXLine_DoubleClick;
+            //chartYLine.DoubleClick += ChartYLine_DoubleClick;
+            //chartXLine.Dock = DockStyle.Fill;
+            //chartYLine.Dock = DockStyle.Fill;
 
             toolStripTextBox2.Text = "500";
             toolStripTextBox3.Text = "200";
             _gaussRefreshTime = 500;
             _gaussSize = 200;
-            
+
             if (File.Exists(NameAndDefine.calibrationFile))
             {
-                string str = File.ReadAllText(NameAndDefine.calibrationFile);
-                string[] cals = str.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                string[] cals = File.ReadAllLines(NameAndDefine.calibrationFile);
                 List<string[]> calsComplete = cals.Select(x => x.Split('#')).ToList();
+                toolStripComboBox2.Items.Clear();
                 for (int i = 0; i < calsComplete.Count; i++)
                     toolStripComboBox2.Items.Add(calsComplete[i][0]);
             }
@@ -161,60 +168,69 @@ namespace WebcamLightMeter
                 }
             };
             delayAfterLoad.Start();
-        }
 
-        private void ChartXLine_DoubleClick(object sender, EventArgs e)
-        {
-            ChartXYForm chartXYForm = new ChartXYForm(chartXLine, chartYLine);
-            chartXYForm.FormClosing += (s, ea) =>
-            {
-                splitContainer3.Panel1.Controls.Clear();
-                splitContainer3.Panel1.Controls.Add(chartXLine);
-                splitContainer3.Panel2.Controls.Clear();
-                splitContainer3.Panel2.Controls.Add(chartYLine);
-            };
-            chartXYForm.Show();
-        }
+            chartRGB = new Chart(splitContainer5.Panel1.ClientSize.Width, splitContainer5.Panel1.ClientSize.Height);
+            chartRGB.Dock = DockStyle.Fill;
+            chartRGB.LegendX = "Pixel value";
+            chartRGB.LegendY = "Intensity";
+            chartRGB.Title = "RGB histogram";
+            chartRGB.AxisPen = new Pen(Color.Black, 1);
+            chartRGB.DataPen = new List<Pen>() { new Pen(Color.Red, 2), new Pen(Color.Green, 2), new Pen(Color.Blue, 2) };
 
-        private void ChartYLine_DoubleClick(object sender, EventArgs e)
-        {
-            ChartXYForm chartXYForm = new ChartXYForm(chartXLine, chartYLine);
-            chartXYForm.FormClosing += (s, ea) =>
-            {
-                splitContainer3.Panel1.Controls.Clear();
-                splitContainer3.Panel1.Controls.Add(chartXLine);
-                splitContainer3.Panel2.Controls.Clear();
-                splitContainer3.Panel2.Controls.Add(chartYLine);
-            };
-            chartXYForm.Show();
-        }
+            lightnessDataSet = new List<double>();
+            chartLightness = new Chart(splitContainer6.Panel1.ClientSize.Width, splitContainer6.Panel1.ClientSize.Height);
+            chartLightness.Dock = DockStyle.Fill;
+            chartLightness.LegendX = "measurement";
+            chartLightness.LegendY = "Intensity";
+            chartLightness.Title = "Lightness intensity";
+            chartLightness.AxisPen = new Pen(Color.Black, 1);
+            chartLightness.DataPen = new List<Pen>() { new Pen(Color.LightBlue, 2) };
 
-        private void ChartRGB_DoubleClick(object sender, EventArgs e)
-        {
-            Form formRGB = new Form();
-            formRGB.FormClosing += (s, ea) =>
-            {
-                splitContainer5.Panel1.Controls.Clear();
-                splitContainer5.Panel1.Controls.Add(chartRGB);
-            };
-            formRGB.Controls.Add(chartRGB);
-            formRGB.WindowState = FormWindowState.Maximized;
-            formRGB.StartPosition = FormStartPosition.CenterScreen;
-            formRGB.Show();
-        }
+            chartXLine = new Chart(splitContainer3.Panel1.ClientSize.Width, splitContainer3.Panel1.ClientSize.Height);
+            chartXLine.Dock = DockStyle.Fill;
+            chartXLine.LegendX = "X position";
+            chartXLine.LegendY = "Intensity";
+            chartXLine.Title = "Intensity distribution around custom point along X axis";
+            chartXLine.AxisPen = new Pen(Color.Black, 1);
+            chartXLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
 
-        private void ChartLightness_DoubleClick(object sender, EventArgs e)
-        {
-            Form formLightness = new Form();
-            formLightness.FormClosing += (s, ea) =>
+            chartYLine = new Chart(splitContainer3.Panel2.ClientSize.Width, splitContainer3.Panel2.ClientSize.Height);
+            chartYLine.Dock = DockStyle.Fill;
+            chartYLine.LegendX = "Y position";
+            chartYLine.LegendY = "Intensity";
+            chartYLine.Title = "Intensity distribution around custom point along Y axis";
+            chartYLine.AxisPen = new Pen(Color.Black, 1);
+            chartYLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
+
+            Timer chartRefresh = new Timer();
+            chartRefresh.Interval = 100;
+            chartRefresh.Tick += (sender, e) =>
             {
-                splitContainer6.Panel1.Controls.Clear();
-                splitContainer6.Panel1.Controls.Add(chartLightness);
+                if (histograms != null)
+                {
+                    chartRGB.Clear();
+                    List<List<double>> input = new List<List<double>>();
+                    input.Add(histograms['R'].Select(x => (double)x).ToList());
+                    input.Add(histograms['G'].Select(x => (double)x).ToList());
+                    input.Add(histograms['B'].Select(x => (double)x).ToList());
+                    chartRGB.Values = input;
+                    chartRGB.Draw();
+                    splitContainer5.Panel1.Controls.Clear();
+                    splitContainer5.Panel1.Controls.Add(chartRGB);
+                }
+
+                if (lightnessDataSet != null && lightnessDataSet.Count != 0)
+                {
+                    chartLightness.Clear();
+                    List<List<double>> input = new List<List<double>>();
+                    input.Add(lightnessDataSet);
+                    chartLightness.Values = input;
+                    chartLightness.Draw();
+                    splitContainer6.Panel1.Controls.Clear();
+                    splitContainer6.Panel1.Controls.Add(chartLightness);
+                }
             };
-            formLightness.Controls.Add(chartLightness);
-            formLightness.WindowState = FormWindowState.Maximized;
-            formLightness.StartPosition = FormStartPosition.CenterScreen;
-            formLightness.Show();
+            chartRefresh.Start();
         }
 
         private void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
@@ -224,35 +240,20 @@ namespace WebcamLightMeter
             //AVIwriter.AddFrame(video);
 
             Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            pictureBoxStream.Image = (Bitmap)bitmap.Clone();
+            histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
 
-            BeginInvoke((Action)(() =>
+            lightnessDataSet.Add(lightness);
+            if (lightnessDataSet.Count > 500)
+                lightnessDataSet.RemoveAt(0);
+
+            if (_acquireData)
             {
-                pictureBoxStream.Image = bitmap;
-                Dictionary<char, List<int>> histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
-                int size = histograms['R'].Count;
-                chartRGB.Series["RSeries"].Points.Clear();
-                chartRGB.Series["GSeries"].Points.Clear();
-                chartRGB.Series["BSeries"].Points.Clear();
-
-                for (int i = 0; i < size; i++)
-                {
-                    chartRGB.Series["RSeries"].Points.AddXY(i, histograms['R'][i]);
-                    chartRGB.Series["GSeries"].Points.AddXY(i, histograms['G'][i]);
-                    chartRGB.Series["BSeries"].Points.AddXY(i, histograms['B'][i]);
-                }
-
-                chartLightness.Series["Lightness"].Points.AddY(lightness);
-                if (chartLightness.Series["Lightness"].Points.Count > 500)
-                    chartLightness.Series["Lightness"].Points.RemoveAt(0);
-
-                if (_acquireData)
-                {
-                    if (_data.ContainsKey("Lightness"))
-                        _data["Lightness"].Add(lightness);
-                    else
-                        _data.Add("Lightness", new List<double>() { lightness });
-                }
-            }));
+                Utils.AddOrUpdateDictionary(ref _data, "Lightness", lightness);
+                Utils.AddOrUpdateDictionary(ref _data, "MaxR", histograms['R'].Max());
+                Utils.AddOrUpdateDictionary(ref _data, "MaxG", histograms['G'].Max());
+                Utils.AddOrUpdateDictionary(ref _data, "MaxB", histograms['B'].Max());
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -363,38 +364,42 @@ namespace WebcamLightMeter
             _gaussTimer.Interval = _gaussRefreshTime;
             _gaussTimer.Tick += (s, ea) =>
             {
+                Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
+                Dictionary<string, List<double>> fitting = Analyzer.GaussianFittingXY(bitmap, x, y, (int)_gaussSize);
+
+                //Refresh crop
+                Bitmap bmpImage = new Bitmap(bitmap);
+                Rectangle rect = new Rectangle((int)((x - _gaussSize / 2) < 0 ? 0 : (x - _gaussSize / 2)), (int)((y - _gaussSize / 2) < 0 ? 0 : (y - _gaussSize / 2)), (int)_gaussSize, (int)_gaussSize);
+                bmpImage = bmpImage.Clone(rect, bmpImage.PixelFormat);
+
                 BeginInvoke((Action)(() =>
                 {
-                    Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
-
-                    //Refresh crop
-                    Bitmap bmpImage = new Bitmap(bitmap);
-                    Rectangle rect = new Rectangle((int)((x - _gaussSize / 2) < 0 ? 0 : (x - _gaussSize / 2)), (int)((y - _gaussSize / 2) < 0 ? 0 : (y - _gaussSize / 2)), (int)_gaussSize, (int)_gaussSize);
-                    bmpImage = bmpImage.Clone(rect, bmpImage.PixelFormat);
                     pictureBoxSnap.Image = bmpImage;
 
-                    Dictionary<string, List<double>> fitting = Analyzer.GaussianFittingXY(bitmap, x, y, (int)_gaussSize);
-                    chartXLine.Series["XLine"].Points.Clear();
-                    chartXLine.Series["GXLine"].Points.Clear();
-                    for (int i = 0; i < fitting["xLine"].Count; i++)
-                    {
-                        chartXLine.Series["XLine"].Points.AddXY(i, fitting["xLine"][i]);
-                        chartXLine.Series["GXLine"].Points.AddXY(i, fitting["gXLine"][i]);
-                    }
+                    chartXLine.Clear();
+                    List<List<double>> input = new List<List<double>>();
+                    input.Add(fitting["xLine"]);
+                    input.Add(fitting["gXLine"]);
+                    chartXLine.Values = input;
+                    chartXLine.Draw();
+                    splitContainer3.Panel1.Controls.Clear();
+                    splitContainer3.Panel1.Controls.Add(chartXLine);
 
-                    chartYLine.Series["YLine"].Points.Clear();
-                    chartYLine.Series["GYLine"].Points.Clear();
-                    for (int i = 0; i < fitting["yLine"].Count; i++)
-                    {
-                        chartYLine.Series["YLine"].Points.AddXY(i, fitting["yLine"][i]);
-                        chartYLine.Series["GYLine"].Points.AddXY(i, fitting["gYLine"][i]);
-                    }
+                    chartYLine.Clear();
+                    input = new List<List<double>>();
+                    input.Add(fitting["yLine"]);
+                    input.Add(fitting["gYLine"]);
+                    chartYLine.Values = input;
+                    chartYLine.Draw();
+                    splitContainer3.Panel2.Controls.Clear();
+                    splitContainer3.Panel2.Controls.Add(chartYLine);
 
-                    if (_followLight)
-                    {
-
-                    }
                 }));
+
+                if (_followLight)
+                {
+                    Point newPosition = Analyzer.FollowLight(bitmap, x, y);
+                }
             };
             _gaussTimer.Start();
         }
@@ -402,18 +407,16 @@ namespace WebcamLightMeter
         private string _directory = "";
         private void DataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string fileName = "";
             if (dataToolStripMenuItem.Text == "Start acquire data")
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
+                if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
-                    _directory = Path.GetDirectoryName(saveFileDialog.FileName);
-                    fileName = Path.GetFileName(saveFileDialog.FileName);
+                    _directory = folderBrowserDialog.SelectedPath;
                     dataToolStripMenuItem.Text = "Stop acquire data";
 
                     _acquireData = true;
-                    _data = new Dictionary<string, List<double>>();
+                    _data = new Dictionary<string, List<Tuple<string, double>>>();
                 }
             }
             else if (dataToolStripMenuItem.Text == "Stop acquire data")
@@ -421,10 +424,14 @@ namespace WebcamLightMeter
                 _acquireData = false;
                 dataToolStripMenuItem.Text = "Saving...";
 
-                string strData = "";
-                for (int i = 0; i < _data["Lightness"].Count; i++)
-                    strData += _data["Lightness"][i] + Environment.NewLine;
-                File.WriteAllText(_directory + "\\Lightness.txt", strData);
+                for (int k = 0; k < _data.Keys.Count; k++)
+                {
+                    string strData = "";
+                    for (int i = 0; i < _data[_data.Keys.ElementAt(k)].Count; i++)
+                        strData += _data[_data.Keys.ElementAt(k)][i].Item1 + "#" + _data[_data.Keys.ElementAt(k)][i].Item2 + Environment.NewLine;
+
+                    File.WriteAllText(_directory + "\\" + _data.Keys.ElementAt(k) + ".txt", strData);
+                }
 
                 dataToolStripMenuItem.Text = "Start acquire data";
             }
@@ -432,7 +439,7 @@ namespace WebcamLightMeter
 
         private void StartCalibrationToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CalibrationForm calibrationForm = new CalibrationForm(pictureBoxStream);
+            CalibrationForm calibrationForm = new CalibrationForm(pictureBoxStream, toolStripComboBox2);
             calibrationForm.Show();
         }
     }
