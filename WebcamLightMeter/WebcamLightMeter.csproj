@@ -133,6 +133,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Driver\Driver.csproj">
+      <Project>{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}</Project>
+      <Name>Driver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LightAnalyzer\LightAnalyzer.csproj">
       <Project>{d30da439-b345-4855-9352-0762952b3d0d}</Project>
       <Name>LightAnalyzer</Name>

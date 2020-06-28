@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using ZWOptical.ASISDK;
 using Point = Accord.Point;
 
 namespace GtkWebcamLightMeter
@@ -42,6 +43,8 @@ namespace GtkWebcamLightMeter
             _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
             foreach (FilterInfo device in _videoCaptureDevices)
                 toolStripComboBox1.Items.Add(device);
+
+            int number = ASICameraDll2.ASIGetNumOfConnectedCameras();
 
             ControlsEventAndBehaviour();
         }

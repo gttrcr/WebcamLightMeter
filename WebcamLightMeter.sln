@@ -7,9 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebcamLightMeter", "WebcamL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightAnalyzer", "LightAnalyzer\LightAnalyzer.csproj", "{D30DA439-B345-4855-9352-0762952B3D0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GTKSharpDemo", "GTKSharpDemo-master\GTKSharpDemo.csproj", "{20D99F76-7BF5-4804-8942-7787FE5CB496}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GtkWebcamLightMeter", "GtkWebcamLightMeter\GtkWebcamLightMeter.csproj", "{AC88446C-A99E-4230-A15C-E803887B9900}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Driver", "Driver\Driver.csproj", "{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,21 +33,14 @@ Global
 		{D30DA439-B345-4855-9352-0762952B3D0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D30DA439-B345-4855-9352-0762952B3D0D}.Release|x86.ActiveCfg = Release|Any CPU
 		{D30DA439-B345-4855-9352-0762952B3D0D}.Release|x86.Build.0 = Release|Any CPU
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Debug|Any CPU.Build.0 = Debug|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Debug|x86.ActiveCfg = Debug|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Debug|x86.Build.0 = Debug|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Release|Any CPU.ActiveCfg = Release|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Release|x86.ActiveCfg = Release|x86
-		{20D99F76-7BF5-4804-8942-7787FE5CB496}.Release|x86.Build.0 = Release|x86
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Debug|x86.Build.0 = Debug|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Release|x86.ActiveCfg = Release|Any CPU
-		{AC88446C-A99E-4230-A15C-E803887B9900}.Release|x86.Build.0 = Release|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Debug|x86.Build.0 = Debug|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Release|x86.ActiveCfg = Release|Any CPU
+		{0D2E4A5B-EFFD-46DF-B69E-520081612BC1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
