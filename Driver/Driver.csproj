@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,8 +42,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ASICameraDll2.cs" />
+    <Compile Include="ASICameraDll2Driver.cs" />
+    <Compile Include="GenericWebcamDriver.cs" />
+    <Compile Include="IDriver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AForge">
+      <Version>2.2.5</Version>
+    </PackageReference>
+    <PackageReference Include="AForge.Video">
+      <Version>2.2.5</Version>
+    </PackageReference>
+    <PackageReference Include="AForge.Video.DirectShow">
+      <Version>2.2.5</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
