@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GtkWebcamLightMeter.Properties
+namespace WebcamLightMeter.Properties
 {
 
 

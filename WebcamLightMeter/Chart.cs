@@ -1,10 +1,10 @@
 ﻿namespace ControlChart
 {
+    using System;
     using System.Linq;
     using System.Drawing;
     using System.Windows.Forms;
     using System.Collections.Generic;
-    using System.Web.UI.DataVisualization.Charting;
 
     /// <summary>
     /// Draws a simple chart.
@@ -34,6 +34,7 @@
             DrawString = false;
             NXAxis = 5;
             NYAxis = 10;
+            IsLogarithmic = false;
 
             Build();
 
@@ -57,7 +58,7 @@
 
             DrawLegends();
         }
-        
+
         public void Clear()
         {
             grf.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
@@ -89,7 +90,7 @@
             int xGap = GraphWidth / (numValues + 1);
             int baseLine = DataOrgPosition.Y;
 
-            NormalizeData(values);
+            double[] normalizedData = NormalizeData(values);
             for (int i = 0; i < numValues; ++i)
             {
                 string tag = values[i].ToString();
@@ -115,7 +116,7 @@
 
             // X axis
             grf.DrawLine(AxisPen, new Point(FramedOrgPosition.X, FramedEndPosition.Y), FramedEndPosition);
-            
+
             int width = FramedEndPosition.X - FramedOrgPosition.X;
             for (int i = 1; i <= NYAxis; i++)
                 grf.DrawLine(AxisPen, FramedOrgPosition.X + i * (width / NYAxis), FramedOrgPosition.Y, FramedOrgPosition.X + i * (width / NYAxis), FramedEndPosition.Y);
@@ -128,17 +129,18 @@
             grf = Graphics.FromImage(bmp);
         }
 
-        private void NormalizeData(List<double> values)
+        private double[] NormalizeData(List<double> values)
         {
+            values = IsLogarithmic ? values.Select(x => x = ((x == 0) ? 0 : Math.Log10(x))).ToList() : values;
             int maxHeight = DataOrgPosition.Y - FrameWidth;
             double maxValue = values.Max();
 
-            normalizedData = values.ToArray();
+            double[] normalizedData = values.ToArray();
 
             for (int i = 0; i < normalizedData.Length; ++i)
                 normalizedData[i] = (values[i] * maxHeight) / maxValue;
 
-            return;
+            return normalizedData;
         }
 
         /// <summary>
@@ -309,8 +311,13 @@
             get; set;
         }
 
+        public bool IsLogarithmic
+        {
+            get; set;
+        }
+
         private Graphics grf;
         private readonly List<List<double>> values;
-        private double[] normalizedData;
+        //private double[] normalizedData;
     }
 }

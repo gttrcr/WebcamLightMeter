@@ -98,23 +98,27 @@ namespace LightAnalyzer
 
             //gauss X line
             double xLineMax = xLine.Max();
+            double xLineMaxX = xLine.IndexOf(xLineMax);
             double xAvg = xLine.Average();
             double sumOfSquaresOfDifferences = xLine.Select(val => (val - xAvg) * (val - xAvg)).Sum();
             double xVariance = Math.Sqrt(sumOfSquaresOfDifferences / xLine.Count);
 
             List<double> gXLine = new List<double>();
             for (int i = 0; i < xLine.Count; i++)
-                gXLine.Add(xLineMax * Math.Exp(-Math.Pow(i - xAvg, 2) / (2 * Math.Pow(xVariance, 2))));
+                //gXLine.Add(xLineMax * Math.Exp(-Math.Pow(i - xAvg, 2) / (2 * Math.Pow(xVariance, 2))));
+                gXLine.Add(xLineMax * Math.Exp(-Math.Pow(i - xLineMaxX, 2) / (2 * Math.Pow(xVariance, 2))));
 
             //gauss Y line
             double yLineMax = yLine.Max();
+            double yLineMaxX = yLine.IndexOf(yLineMax);
             double yAvg = yLine.Average();
             sumOfSquaresOfDifferences = xLine.Select(val => (val - yAvg) * (val - yAvg)).Sum();
             double yVariance = Math.Sqrt(sumOfSquaresOfDifferences / yLine.Count);
 
             List<double> gYLine = new List<double>();
             for (int i = 0; i < yLine.Count; i++)
-                gYLine.Add(yLineMax * Math.Exp(-Math.Pow(i - yAvg, 2) / (2 * Math.Pow(yVariance, 2))));
+                //gYLine.Add(yLineMax * Math.Exp(-Math.Pow(i - yAvg, 2) / (2 * Math.Pow(yVariance, 2))));
+                gYLine.Add(yLineMax * Math.Exp(-Math.Pow(i - yLineMaxX, 2) / (2 * Math.Pow(yVariance, 2))));
 
             Dictionary<string, List<double>> ret = new Dictionary<string, List<double>>();
             ret.Add("xLine", xLine);
@@ -127,28 +131,28 @@ namespace LightAnalyzer
 
         public static Point FollowLight(Bitmap bitmap, int xPoint, int yPoint)
         {
-            var tmpBmp = new Bitmap(bitmap);
-            var width = bitmap.Width;
-            var height = bitmap.Height;
-            var bppModifier = bitmap.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
-
-            var srcData = tmpBmp.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
-            var stride = srcData.Stride;
-            var scan0 = srcData.Scan0;
-
-            int yMin = 0;
-            int yMax = height;
-            int xMin = 0;
-            int xMax = width;
-
-            unsafe
-            {
-                byte* p = (byte*)(void*)scan0;
-                //
-            }
-
-            tmpBmp.UnlockBits(srcData);
-            tmpBmp.Dispose();
+            //var tmpBmp = new Bitmap(bitmap);
+            //var width = bitmap.Width;
+            //var height = bitmap.Height;
+            //var bppModifier = bitmap.PixelFormat == PixelFormat.Format24bppRgb ? 3 : 4;
+            //
+            //var srcData = tmpBmp.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, bitmap.PixelFormat);
+            //var stride = srcData.Stride;
+            //var scan0 = srcData.Scan0;
+            //
+            //int yMin = 0;
+            //int yMax = height;
+            //int xMin = 0;
+            //int xMax = width;
+            //
+            //unsafe
+            //{
+            //    byte* p = (byte*)(void*)scan0;
+            //    //
+            //}
+            //
+            //tmpBmp.UnlockBits(srcData);
+            //tmpBmp.Dispose();
 
             Point point = new Point();
             return point;

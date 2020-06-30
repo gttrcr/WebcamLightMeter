@@ -1,4 +1,4 @@
-﻿namespace GtkWebcamLightMeter
+﻿namespace WebcamLightMeter
 {
     public class NameAndDefine
     {

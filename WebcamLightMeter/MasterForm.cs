@@ -1,6 +1,5 @@
-﻿using AForge.Video;
-using AForge.Video.DirectShow;
-using ControlChart;
+﻿using ControlChart;
+using Driver;
 using LightAnalyzer;
 using System;
 using System.Collections.Generic;
@@ -8,10 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using ZWOptical.ASISDK;
 using Point = Accord.Point;
+using Timer = System.Windows.Forms.Timer;
 
-namespace GtkWebcamLightMeter
+namespace WebcamLightMeter
 {
     public partial class MasterForm : Form
     {
@@ -27,8 +26,8 @@ namespace GtkWebcamLightMeter
         private Chart chartYLine;
         private Dictionary<char, List<int>> histograms;
 
-        private FilterInfoCollection _videoCaptureDevices;
-        private VideoCaptureDevice _finalVideo;
+        private List<IDriver> _driverList;
+        private Dictionary<string, IDriver> _devices;
         private int _gaussRefreshTime = 0;
         private double _gaussLevel = 0;
         private double _gaussSize = 0;
@@ -37,14 +36,35 @@ namespace GtkWebcamLightMeter
         private bool _acquireData;
         private Dictionary<string, List<Tuple<string, double>>> _data;
         private bool _followLight;
+        private string _directoryForSavingData;
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            _videoCaptureDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
-            foreach (FilterInfo device in _videoCaptureDevices)
-                toolStripComboBox1.Items.Add(device);
+            _devices = new Dictionary<string, IDriver>();
+            _driverList = new List<IDriver>();
+            _driverList.Add(new GenericWebcamDriver());
+            _driverList.Add(new ASICameraDll2Driver());
 
-            int number = ASICameraDll2.ASIGetNumOfConnectedCameras();
+            for (int i = 0; i < _driverList.Count; i++)
+            {
+                IDriver driver = _driverList[i];
+                if (driver.GetType() == typeof(GenericWebcamDriver))
+                {
+                    List<string> genericDevices = driver.SearchDevices();
+                    toolStripComboBox1.Items.AddRange(genericDevices.ToArray());
+
+                    for (int d = 0; d < genericDevices.Count; d++)
+                        _devices.Add(genericDevices[d], _driverList[i]);
+                }
+                else if (driver.GetType() == typeof(ASICameraDll2Driver))
+                {
+                    List<string> listOfAsi = driver.SearchDevices();
+                    toolStripComboBox1.Items.AddRange(listOfAsi.ToArray());
+
+                    for (int d = 0; d < listOfAsi.Count; d++)
+                        _devices.Add(listOfAsi[d], _driverList[i]);
+                }
+            }
 
             ControlsEventAndBehaviour();
         }
@@ -53,34 +73,6 @@ namespace GtkWebcamLightMeter
         {
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.CenterScreen;
-
-            logToolStripMenuItem.Click += (sender, e) =>
-            {
-                logToolStripMenuItem.Checked = true;
-                linearToolStripMenuItem.Checked = false;
-                //chartRGB.ChartAreas[0].AxisY.IsLogarithmic = true;
-            };
-
-            linearToolStripMenuItem.Click += (sender, e) =>
-            {
-                linearToolStripMenuItem.Checked = true;
-                logToolStripMenuItem.Checked = false;
-                //chartRGB.ChartAreas[0].AxisY.IsLogarithmic = false;
-            };
-
-            toolStripTextBox1.KeyDown += (sender, e) =>
-            {
-                if (e.KeyCode == Keys.Enter)
-                {
-                    if (Double.TryParse(toolStripTextBox1.Text, out double val))
-                    {
-                        _gaussLevel = val;
-                        streamToolStripMenuItem.HideDropDown();
-                    }
-                    else
-                        MessageBox.Show("Cannot parse value for level", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            };
 
             toolStripTextBox2.KeyDown += (sender, e) =>
             {
@@ -112,37 +104,13 @@ namespace GtkWebcamLightMeter
                         MessageBox.Show("Cannot parse value for size", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             };
-
-            enableToolStripMenuItem.Click += (sender, e) =>
-            {
-                _followLight = true;
-                enableToolStripMenuItem.Checked = true;
-                disableToolStripMenuItem.Checked = false;
-            };
-
-            disableToolStripMenuItem.Click += (sender, e) =>
-            {
-                _followLight = false;
-                enableToolStripMenuItem.Checked = false;
-                disableToolStripMenuItem.Checked = true;
-            };
-
-            logToolStripMenuItem.PerformClick();
-            disableToolStripMenuItem.PerformClick();
-            //chartRGB.ChartAreas[0].AxisX.Minimum = 0;
-            //chartRGB.ChartAreas[0].AxisX.Maximum = 255;
-            //chartLightness.ChartAreas[0].AxisX.Minimum = 0;
-            //chartLightness.ChartAreas[0].AxisX.Maximum = 500;
+            
             splitContainer2.SplitterDistance = splitContainer2.ClientSize.Width / 2;
             splitContainer3.SplitterDistance = splitContainer3.ClientSize.Width / 2;
             splitContainer4.SplitterDistance = 2 * splitContainer4.ClientSize.Width / 3;
             splitContainer5.SplitterDistance = splitContainer5.ClientSize.Height / 3;
             splitContainer6.SplitterDistance = splitContainer6.ClientSize.Height / 2;
             pictureBoxStream.Click += PictureBoxStream_Click;
-            //chartXLine.DoubleClick += ChartXLine_DoubleClick;
-            //chartYLine.DoubleClick += ChartYLine_DoubleClick;
-            //chartXLine.Dock = DockStyle.Fill;
-            //chartYLine.Dock = DockStyle.Fill;
 
             toolStripTextBox2.Text = "500";
             toolStripTextBox3.Text = "200";
@@ -205,6 +173,22 @@ namespace GtkWebcamLightMeter
             chartYLine.AxisPen = new Pen(Color.Black, 1);
             chartYLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
 
+            logToolStripMenuItem.Click += (sender, e) =>
+            {
+                logToolStripMenuItem.Checked = true;
+                linearToolStripMenuItem.Checked = false;
+                chartRGB.IsLogarithmic = true;
+            };
+
+            linearToolStripMenuItem.Click += (sender, e) =>
+            {
+                linearToolStripMenuItem.Checked = true;
+                logToolStripMenuItem.Checked = false;
+                chartRGB.IsLogarithmic = false;
+            };
+
+            linearToolStripMenuItem.PerformClick();
+
             Timer chartRefresh = new Timer();
             chartRefresh.Interval = 100;
             chartRefresh.Tick += (sender, e) =>
@@ -236,13 +220,28 @@ namespace GtkWebcamLightMeter
             chartRefresh.Start();
         }
 
-        private void FinalVideo_NewFrame(object sender, NewFrameEventArgs eventArgs)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //pictureBoxStream.Image = (Bitmap)eventArgs.Frame.Clone();
-            //FileWriter.WriteVideoFrame(image);
-            //AVIwriter.AddFrame(video);
+            if (_devices[toolStripComboBox1.SelectedItem.ToString()] == null)
+            {
+                Application.Exit();
+                return;
+            }
 
-            Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+            if (_devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
+            {
+                _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
+                _gaussTimer.Stop();
+                Application.Exit();
+                return;
+            }
+
+            Application.Exit();
+        }
+
+        private void DelegateMethodDriver(object obj1, Bitmap obj2)
+        {
+            Bitmap bitmap = (Bitmap)obj2.Clone();
             pictureBoxStream.Image = (Bitmap)bitmap.Clone();
             histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
 
@@ -259,43 +258,20 @@ namespace GtkWebcamLightMeter
             }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            if (_finalVideo == null)
-            {
-                Application.Exit();
-                return;
-            }
-
-            if (_finalVideo.IsRunning == true)
-            {
-                _finalVideo.Stop();
-                Application.Exit();
-            }
-            else
-                Application.Exit();
-        }
-
         private void OpenCamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _finalVideo = new VideoCaptureDevice(_videoCaptureDevices[toolStripComboBox1.SelectedIndex].MonikerString);
-            _finalVideo.NewFrame += new NewFrameEventHandler(FinalVideo_NewFrame);
-            _finalVideo.Start();
+            _devices[toolStripComboBox1.SelectedItem.ToString()].Start(toolStripComboBox1.SelectedItem, DelegateMethodDriver);
         }
 
         private void CloseCamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_finalVideo.IsRunning == true)
+            if (_devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
             {
-                _finalVideo.Stop();
+                _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
+                _gaussTimer.Stop();
                 pictureBoxStream.Image = null;
                 pictureBoxStream.Invalidate();
             }
-        }
-
-        private void TakeAPictureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //pictureBoxSnap.Image = (Bitmap)pictureBoxStream.Image.Clone();
         }
 
         private void SaveThePictureToolStripMenuItem_Click(object sender, EventArgs e)
@@ -314,12 +290,6 @@ namespace GtkWebcamLightMeter
             //        MessageBox.Show("The photo couldn't save.", "Fail", MessageBoxButtons.OK);
             //    }
             //}
-        }
-
-        private void ClearPictureBoxToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //pictureBoxSnap.Image = null;
-            //pictureBoxSnap.Invalidate();
         }
 
         private void PictureBoxStream_Click(object sender, EventArgs e)
@@ -406,8 +376,7 @@ namespace GtkWebcamLightMeter
             };
             _gaussTimer.Start();
         }
-
-        private string _directory = "";
+        
         private void DataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dataToolStripMenuItem.Text == "Start acquire data")
@@ -415,7 +384,7 @@ namespace GtkWebcamLightMeter
                 FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
                 if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
                 {
-                    _directory = folderBrowserDialog.SelectedPath;
+                    _directoryForSavingData = folderBrowserDialog.SelectedPath;
                     dataToolStripMenuItem.Text = "Stop acquire data";
 
                     _acquireData = true;
@@ -433,7 +402,7 @@ namespace GtkWebcamLightMeter
                     for (int i = 0; i < _data[_data.Keys.ElementAt(k)].Count; i++)
                         strData += _data[_data.Keys.ElementAt(k)][i].Item1 + "#" + _data[_data.Keys.ElementAt(k)][i].Item2 + Environment.NewLine;
 
-                    File.WriteAllText(_directory + "\\" + _data.Keys.ElementAt(k) + ".txt", strData);
+                    File.WriteAllText(_directoryForSavingData + "\\" + _data.Keys.ElementAt(k) + ".txt", strData);
                 }
 
                 dataToolStripMenuItem.Text = "Start acquire data";
@@ -444,6 +413,12 @@ namespace GtkWebcamLightMeter
         {
             CalibrationForm calibrationForm = new CalibrationForm(pictureBoxStream, toolStripComboBox2);
             calibrationForm.Show();
+        }
+
+        private void FollowLightToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FollowLightForm followLightForm = new FollowLightForm();
+            followLightForm.Show();
         }
     }
 }

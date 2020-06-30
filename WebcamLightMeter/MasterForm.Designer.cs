@@ -1,4 +1,4 @@
-﻿namespace GtkWebcamLightMeter
+﻿namespace WebcamLightMeter
 {
     partial class MasterForm
     {
@@ -34,29 +34,22 @@
             this.toolStripComboBox1 = new System.Windows.Forms.ToolStripComboBox();
             this.openCamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.closeCamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.takeAPictureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveThePictureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearPictureBoxToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.calibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadCalibrationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripComboBox2 = new System.Windows.Forms.ToolStripComboBox();
             this.streamToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.levelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.refreshTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox2 = new System.Windows.Forms.ToolStripTextBox();
             this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox3 = new System.Windows.Forms.ToolStripTextBox();
             this.followLightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.disableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartRGBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.linearToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chartLightnessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
@@ -112,9 +105,7 @@
             this.filterInfoToolStripMenuItem,
             this.openCamToolStripMenuItem,
             this.closeCamToolStripMenuItem,
-            this.takeAPictureToolStripMenuItem,
             this.saveThePictureToolStripMenuItem,
-            this.clearPictureBoxToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
@@ -125,7 +116,7 @@
             this.filterInfoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripComboBox1});
             this.filterInfoToolStripMenuItem.Name = "filterInfoToolStripMenuItem";
-            this.filterInfoToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+            this.filterInfoToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.filterInfoToolStripMenuItem.Text = "Filter Info";
             // 
             // toolStripComboBox1
@@ -136,42 +127,28 @@
             // openCamToolStripMenuItem
             // 
             this.openCamToolStripMenuItem.Name = "openCamToolStripMenuItem";
-            this.openCamToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+            this.openCamToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.openCamToolStripMenuItem.Text = "Open Cam";
             this.openCamToolStripMenuItem.Click += new System.EventHandler(this.OpenCamToolStripMenuItem_Click);
             // 
             // closeCamToolStripMenuItem
             // 
             this.closeCamToolStripMenuItem.Name = "closeCamToolStripMenuItem";
-            this.closeCamToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+            this.closeCamToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.closeCamToolStripMenuItem.Text = "Close Cam";
             this.closeCamToolStripMenuItem.Click += new System.EventHandler(this.CloseCamToolStripMenuItem_Click);
-            // 
-            // takeAPictureToolStripMenuItem
-            // 
-            this.takeAPictureToolStripMenuItem.Name = "takeAPictureToolStripMenuItem";
-            this.takeAPictureToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
-            this.takeAPictureToolStripMenuItem.Text = "Take a picture";
-            this.takeAPictureToolStripMenuItem.Click += new System.EventHandler(this.TakeAPictureToolStripMenuItem_Click);
             // 
             // saveThePictureToolStripMenuItem
             // 
             this.saveThePictureToolStripMenuItem.Name = "saveThePictureToolStripMenuItem";
-            this.saveThePictureToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+            this.saveThePictureToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.saveThePictureToolStripMenuItem.Text = "Save the picture";
             this.saveThePictureToolStripMenuItem.Click += new System.EventHandler(this.SaveThePictureToolStripMenuItem_Click);
-            // 
-            // clearPictureBoxToolStripMenuItem
-            // 
-            this.clearPictureBoxToolStripMenuItem.Name = "clearPictureBoxToolStripMenuItem";
-            this.clearPictureBoxToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
-            this.clearPictureBoxToolStripMenuItem.Text = "Clear picture box";
-            this.clearPictureBoxToolStripMenuItem.Click += new System.EventHandler(this.ClearPictureBoxToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(205, 26);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(198, 26);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
             // calibrationToolStripMenuItem
@@ -206,7 +183,6 @@
             // streamToolStripMenuItem
             // 
             this.streamToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.levelToolStripMenuItem,
             this.refreshTimeToolStripMenuItem,
             this.sizeToolStripMenuItem,
             this.followLightToolStripMenuItem});
@@ -214,26 +190,12 @@
             this.streamToolStripMenuItem.Size = new System.Drawing.Size(70, 24);
             this.streamToolStripMenuItem.Text = "Stream";
             // 
-            // levelToolStripMenuItem
-            // 
-            this.levelToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripTextBox1});
-            this.levelToolStripMenuItem.Name = "levelToolStripMenuItem";
-            this.levelToolStripMenuItem.Size = new System.Drawing.Size(208, 26);
-            this.levelToolStripMenuItem.Text = "Level";
-            // 
-            // toolStripTextBox1
-            // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 27);
-            // 
             // refreshTimeToolStripMenuItem
             // 
             this.refreshTimeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox2});
             this.refreshTimeToolStripMenuItem.Name = "refreshTimeToolStripMenuItem";
-            this.refreshTimeToolStripMenuItem.Size = new System.Drawing.Size(208, 26);
+            this.refreshTimeToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
             this.refreshTimeToolStripMenuItem.Text = "Refresh time (ms)";
             // 
             // toolStripTextBox2
@@ -247,8 +209,8 @@
             this.sizeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripTextBox3});
             this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
-            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(208, 26);
-            this.sizeToolStripMenuItem.Text = "Size (px)";
+            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+            this.sizeToolStripMenuItem.Text = "Zoom image size (px)";
             // 
             // toolStripTextBox3
             // 
@@ -258,30 +220,15 @@
             // 
             // followLightToolStripMenuItem
             // 
-            this.followLightToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableToolStripMenuItem,
-            this.disableToolStripMenuItem});
             this.followLightToolStripMenuItem.Name = "followLightToolStripMenuItem";
-            this.followLightToolStripMenuItem.Size = new System.Drawing.Size(208, 26);
+            this.followLightToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
             this.followLightToolStripMenuItem.Text = "Follow light";
-            // 
-            // enableToolStripMenuItem
-            // 
-            this.enableToolStripMenuItem.Name = "enableToolStripMenuItem";
-            this.enableToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
-            this.enableToolStripMenuItem.Text = "Enable";
-            // 
-            // disableToolStripMenuItem
-            // 
-            this.disableToolStripMenuItem.Name = "disableToolStripMenuItem";
-            this.disableToolStripMenuItem.Size = new System.Drawing.Size(142, 26);
-            this.disableToolStripMenuItem.Text = "Disable";
+            this.followLightToolStripMenuItem.Click += new System.EventHandler(this.FollowLightToolStripMenuItem_Click);
             // 
             // chartToolStripMenuItem
             // 
             this.chartToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.chartRGBToolStripMenuItem,
-            this.chartLightnessToolStripMenuItem});
+            this.chartRGBToolStripMenuItem});
             this.chartToolStripMenuItem.Name = "chartToolStripMenuItem";
             this.chartToolStripMenuItem.Size = new System.Drawing.Size(58, 24);
             this.chartToolStripMenuItem.Text = "Chart";
@@ -292,7 +239,7 @@
             this.logToolStripMenuItem,
             this.linearToolStripMenuItem});
             this.chartRGBToolStripMenuItem.Name = "chartRGBToolStripMenuItem";
-            this.chartRGBToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
+            this.chartRGBToolStripMenuItem.Size = new System.Drawing.Size(159, 26);
             this.chartRGBToolStripMenuItem.Text = "Chart RGB";
             // 
             // logToolStripMenuItem
@@ -306,12 +253,6 @@
             this.linearToolStripMenuItem.Name = "linearToolStripMenuItem";
             this.linearToolStripMenuItem.Size = new System.Drawing.Size(132, 26);
             this.linearToolStripMenuItem.Text = "Linear";
-            // 
-            // chartLightnessToolStripMenuItem
-            // 
-            this.chartLightnessToolStripMenuItem.Name = "chartLightnessToolStripMenuItem";
-            this.chartLightnessToolStripMenuItem.Size = new System.Drawing.Size(192, 26);
-            this.chartLightnessToolStripMenuItem.Text = "Chart Lightness";
             // 
             // dataToolStripMenuItem
             // 
@@ -491,27 +432,20 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem chartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem chartRGBToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem chartLightnessToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem logToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linearToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem streamToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem levelToolStripMenuItem;
-        private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripMenuItem filterInfoToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox toolStripComboBox1;
         private System.Windows.Forms.ToolStripMenuItem openCamToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem closeCamToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem takeAPictureToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveThePictureToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem clearPictureBoxToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshTimeToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox2;
         private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox3;
         private System.Windows.Forms.ToolStripMenuItem dataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem followLightToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem enableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem disableToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem calibrationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem startCalibrationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadCalibrationToolStripMenuItem;

@@ -2,7 +2,7 @@
 using System.Media;
 using System.Windows.Forms;
 
-namespace GtkWebcamLightMeter
+namespace WebcamLightMeter
 {
     public partial class SplashScreen : Form
     {
