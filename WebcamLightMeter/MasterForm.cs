@@ -14,29 +14,31 @@ namespace WebcamLightMeter
 {
     public partial class MasterForm : Form
     {
-        public MasterForm()
-        {
-            InitializeComponent();
-        }
-
-        private Chart chartRGB;
-        private List<double> lightnessDataSet;
-        private Chart chartLightness;
-        private Chart chartXLine;
-        private Chart chartYLine;
-        private Dictionary<char, List<int>> histograms;
+        private Chart _chartRGB;
+        private Chart _chartLightness;
+        private Chart _chartXLine;
+        private Chart _chartYLine;
+        private List<double> _lightnessDataSet;
+        private Dictionary<char, List<int>> _histograms;
+        private Bitmap _bitmap;
 
         private List<IDriver> _driverList;
         private Dictionary<string, IDriver> _devices;
         private int _gaussRefreshTime = 0;
         private double _gaussLevel = 0;
         private double _gaussSize = 0;
+        private Timer _chartRefresh;
         private Timer _gaussTimer;
-        private System.Drawing.Point _gaussPosition;
+        private Point _gaussPosition;
         private bool _acquireData;
         private Dictionary<string, List<Tuple<string, double>>> _data;
         private bool _followLight;
         private string _directoryForSavingData;
+
+        public MasterForm()
+        {
+            InitializeComponent();
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -74,6 +76,13 @@ namespace WebcamLightMeter
             WindowState = FormWindowState.Maximized;
             StartPosition = FormStartPosition.CenterScreen;
 
+            toolStripComboBox1.SelectedIndexChanged += (sender, e) =>
+            {
+                _devices[toolStripComboBox1.SelectedItem.ToString()].Start(((ToolStripComboBox)sender).SelectedItem, DelegateMethodDriver);
+                fileToolStripMenuItem.HideDropDown();
+                _chartRefresh.Start();
+            };
+
             toolStripTextBox2.KeyDown += (sender, e) =>
             {
                 if (e.KeyCode == Keys.Enter)
@@ -94,7 +103,7 @@ namespace WebcamLightMeter
             {
                 if (e.KeyCode == Keys.Enter)
                 {
-                    if (Double.TryParse(toolStripTextBox3.Text, out double val))
+                    if (double.TryParse(toolStripTextBox3.Text, out double val))
                     {
                         _gaussSize = val;
                         streamToolStripMenuItem.HideDropDown();
@@ -104,12 +113,13 @@ namespace WebcamLightMeter
                         MessageBox.Show("Cannot parse value for size", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             };
-            
+
             splitContainer2.SplitterDistance = splitContainer2.ClientSize.Width / 2;
             splitContainer3.SplitterDistance = splitContainer3.ClientSize.Width / 2;
             splitContainer4.SplitterDistance = 2 * splitContainer4.ClientSize.Width / 3;
             splitContainer5.SplitterDistance = splitContainer5.ClientSize.Height / 3;
             splitContainer6.SplitterDistance = splitContainer6.ClientSize.Height / 2;
+            splitContainer7.SplitterDistance = 3 * splitContainer7.ClientSize.Width / 4;
             pictureBoxStream.Click += PictureBoxStream_Click;
 
             toolStripTextBox2.Text = "500";
@@ -117,150 +127,171 @@ namespace WebcamLightMeter
             _gaussRefreshTime = 500;
             _gaussSize = 200;
 
+            toolStripComboBox2.SelectedIndexChanged += (sender, e) =>
+            {
+                string calibrationName = ((ToolStripComboBox)sender).SelectedItem.ToString();
+                if (calibrationName == NameAndDefine.defaultCalibrationName)
+                    Analyzer.UseCalibration(1, 0, 1, 1);
+
+                if (File.Exists(NameAndDefine.calibrationFile))
+                {
+                    string[] cals = File.ReadAllLines(NameAndDefine.calibrationFile);
+                    List<string[]> calsComplete = cals.Select(x => x.Split('#')).ToList();
+                    for (int i = 0; i < calsComplete.Count; i++)
+                        if (calsComplete[i][0] == calibrationName)
+                        {
+                            if (double.TryParse(calsComplete[i][1], out double rSquared) &&
+                            double.TryParse(calsComplete[i][2], out double intercept) &&
+                            double.TryParse(calsComplete[i][3], out double slope) &&
+                            double.TryParse(calsComplete[i][4], out double sensorSize))
+                            {
+                                Analyzer.UseCalibration(rSquared, intercept, slope, sensorSize);
+                                MessageBox.Show("Calibration \"" + calibrationName + "\" applied", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                }
+
+                calibrationToolStripMenuItem.HideDropDown();
+            };
+
+            toolStripComboBox2.Items.Clear();
+            toolStripComboBox2.Items.Add(NameAndDefine.defaultCalibrationName);
             if (File.Exists(NameAndDefine.calibrationFile))
             {
                 string[] cals = File.ReadAllLines(NameAndDefine.calibrationFile);
                 List<string[]> calsComplete = cals.Select(x => x.Split('#')).ToList();
                 toolStripComboBox2.Items.Clear();
+                toolStripComboBox2.Items.Add(NameAndDefine.defaultCalibrationName);
                 for (int i = 0; i < calsComplete.Count; i++)
                     toolStripComboBox2.Items.Add(calsComplete[i][0]);
             }
 
-            Timer delayAfterLoad = new Timer();
-            delayAfterLoad.Interval = 2000;
-            delayAfterLoad.Tick += (sender, e) =>
-            {
-                delayAfterLoad.Stop();
-                delayAfterLoad.Dispose();
-                if (toolStripComboBox1.Items.Count > 0)
-                {
-                    toolStripComboBox1.SelectedIndex = 0;
-                    openCamToolStripMenuItem.PerformClick();
-                }
-            };
-            delayAfterLoad.Start();
+            toolStripComboBox2.SelectedIndex = 0;
 
-            chartRGB = new Chart(splitContainer5.Panel1.ClientSize.Width, splitContainer5.Panel1.ClientSize.Height);
-            chartRGB.Dock = DockStyle.Fill;
-            chartRGB.LegendX = "Pixel value";
-            chartRGB.LegendY = "Intensity";
-            chartRGB.Title = "RGB histogram";
-            chartRGB.AxisPen = new Pen(Color.Black, 1);
-            chartRGB.DataPen = new List<Pen>() { new Pen(Color.Red, 2), new Pen(Color.Green, 2), new Pen(Color.Blue, 2) };
+            _chartRGB = new Chart(splitContainer5.Panel1.ClientSize.Width, splitContainer5.Panel1.ClientSize.Height);
+            _chartRGB.Dock = DockStyle.Fill;
+            _chartRGB.LegendX = "Pixel value";
+            _chartRGB.LegendY = "Intensity";
+            _chartRGB.Title = "RGB histogram";
+            _chartRGB.AxisPen = new Pen(Color.Black, 1);
+            _chartRGB.DataPen = new List<Pen>() { new Pen(Color.Red, 2), new Pen(Color.Green, 2), new Pen(Color.Blue, 2) };
 
-            lightnessDataSet = new List<double>();
-            chartLightness = new Chart(splitContainer6.Panel1.ClientSize.Width, splitContainer6.Panel1.ClientSize.Height);
-            chartLightness.Dock = DockStyle.Fill;
-            chartLightness.LegendX = "measurement";
-            chartLightness.LegendY = "Intensity";
-            chartLightness.Title = "Lightness intensity";
-            chartLightness.AxisPen = new Pen(Color.Black, 1);
-            chartLightness.DataPen = new List<Pen>() { new Pen(Color.LightBlue, 2) };
+            _lightnessDataSet = new List<double>();
+            _chartLightness = new Chart(splitContainer6.Panel1.ClientSize.Width, splitContainer6.Panel1.ClientSize.Height);
+            _chartLightness.Dock = DockStyle.Fill;
+            _chartLightness.LegendX = "measurement";
+            _chartLightness.LegendY = "Intensity";
+            _chartLightness.Title = "Lightness intensity";
+            _chartLightness.AxisPen = new Pen(Color.Black, 1);
+            _chartLightness.DataPen = new List<Pen>() { new Pen(Color.LightBlue, 2) };
 
-            chartXLine = new Chart(splitContainer3.Panel1.ClientSize.Width, splitContainer3.Panel1.ClientSize.Height);
-            chartXLine.Dock = DockStyle.Fill;
-            chartXLine.LegendX = "X position";
-            chartXLine.LegendY = "Intensity";
-            chartXLine.Title = "Intensity distribution around custom point along X axis";
-            chartXLine.AxisPen = new Pen(Color.Black, 1);
-            chartXLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
+            _chartXLine = new Chart(splitContainer3.Panel1.ClientSize.Width, splitContainer3.Panel1.ClientSize.Height);
+            _chartXLine.Dock = DockStyle.Fill;
+            _chartXLine.LegendX = "X position";
+            _chartXLine.LegendY = "Intensity";
+            _chartXLine.Title = "Intensity distribution around custom point along X axis";
+            _chartXLine.AxisPen = new Pen(Color.Black, 1);
+            _chartXLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
 
-            chartYLine = new Chart(splitContainer3.Panel2.ClientSize.Width, splitContainer3.Panel2.ClientSize.Height);
-            chartYLine.Dock = DockStyle.Fill;
-            chartYLine.LegendX = "Y position";
-            chartYLine.LegendY = "Intensity";
-            chartYLine.Title = "Intensity distribution around custom point along Y axis";
-            chartYLine.AxisPen = new Pen(Color.Black, 1);
-            chartYLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
+            _chartYLine = new Chart(splitContainer3.Panel2.ClientSize.Width, splitContainer3.Panel2.ClientSize.Height);
+            _chartYLine.Dock = DockStyle.Fill;
+            _chartYLine.LegendX = "Y position";
+            _chartYLine.LegendY = "Intensity";
+            _chartYLine.Title = "Intensity distribution around custom point along Y axis";
+            _chartYLine.AxisPen = new Pen(Color.Black, 1);
+            _chartYLine.DataPen = new List<Pen>() { new Pen(Color.Blue, 2), new Pen(Color.Green, 2) };
 
             logToolStripMenuItem.Click += (sender, e) =>
             {
                 logToolStripMenuItem.Checked = true;
                 linearToolStripMenuItem.Checked = false;
-                chartRGB.IsLogarithmic = true;
+                _chartRGB.IsLogarithmic = true;
             };
 
             linearToolStripMenuItem.Click += (sender, e) =>
             {
                 linearToolStripMenuItem.Checked = true;
                 logToolStripMenuItem.Checked = false;
-                chartRGB.IsLogarithmic = false;
+                _chartRGB.IsLogarithmic = false;
             };
 
             linearToolStripMenuItem.PerformClick();
 
-            Timer chartRefresh = new Timer();
-            chartRefresh.Interval = 100;
-            chartRefresh.Tick += (sender, e) =>
+            _chartRefresh = new Timer();
+            _chartRefresh.Interval = 100;
+            _chartRefresh.Tick += (sender, e) =>
             {
-                if (histograms != null)
+                if (_histograms != null)
                 {
-                    chartRGB.Clear();
+                    _chartRGB.Clear();
                     List<List<double>> input = new List<List<double>>();
-                    input.Add(histograms['R'].Select(x => (double)x).ToList());
-                    input.Add(histograms['G'].Select(x => (double)x).ToList());
-                    input.Add(histograms['B'].Select(x => (double)x).ToList());
-                    chartRGB.Values = input;
-                    chartRGB.Draw();
+                    input.Add(_histograms['R'].Select(x => (double)x).ToList());
+                    input.Add(_histograms['G'].Select(x => (double)x).ToList());
+                    input.Add(_histograms['B'].Select(x => (double)x).ToList());
+                    _chartRGB.Values = input;
+                    _chartRGB.Draw();
                     splitContainer5.Panel1.Controls.Clear();
-                    splitContainer5.Panel1.Controls.Add(chartRGB);
+                    splitContainer5.Panel1.Controls.Add(_chartRGB);
                 }
 
-                if (lightnessDataSet != null && lightnessDataSet.Count != 0)
+                if (_lightnessDataSet != null && _lightnessDataSet.Count != 0)
                 {
-                    chartLightness.Clear();
+                    _chartLightness.Clear();
                     List<List<double>> input = new List<List<double>>();
-                    input.Add(lightnessDataSet);
-                    chartLightness.Values = input;
-                    chartLightness.Draw();
-                    splitContainer6.Panel1.Controls.Clear();
-                    splitContainer6.Panel1.Controls.Add(chartLightness);
+                    input.Add(_lightnessDataSet);
+                    _chartLightness.Values = input;
+                    _chartLightness.Draw();
+                    splitContainer7.Panel1.Controls.Clear();
+                    splitContainer7.Panel1.Controls.Add(_chartLightness);
+
+                    richTextBox1.Text = Utils.BeaufityStringOutput(Analyzer.MeasureLightProperties(_lightnessDataSet.Last()), "VALUES");
                 }
             };
-            chartRefresh.Start();
+            _chartRefresh.Start();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_devices[toolStripComboBox1.SelectedItem.ToString()] == null)
+            if (toolStripComboBox1.SelectedItem != null)
             {
-                Application.Exit();
-                return;
-            }
+                if (_devices[toolStripComboBox1.SelectedItem.ToString()] == null)
+                {
+                    Application.Exit();
+                    return;
+                }
 
-            if (_devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
-            {
-                _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
-                _gaussTimer.Stop();
-                Application.Exit();
-                return;
+                if (_devices[toolStripComboBox1.SelectedItem.ToString()] != null && _devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
+                {
+                    _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
+                    _chartRefresh?.Stop();
+                    _gaussTimer?.Stop();
+                    Application.Exit();
+                    return;
+                }
             }
 
             Application.Exit();
+            return;
         }
 
         private void DelegateMethodDriver(object obj1, Bitmap obj2)
         {
+            _bitmap = (Bitmap)obj2.Clone();
             Bitmap bitmap = (Bitmap)obj2.Clone();
             pictureBoxStream.Image = (Bitmap)bitmap.Clone();
-            histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
+            _histograms = Analyzer.GetHistogramAndLightness(bitmap, out double lightness);
 
-            lightnessDataSet.Add(lightness);
-            if (lightnessDataSet.Count > 500)
-                lightnessDataSet.RemoveAt(0);
+            _lightnessDataSet.Add(lightness);
+            if (_lightnessDataSet.Count > 500)
+                _lightnessDataSet.RemoveAt(0);
 
             if (_acquireData)
             {
                 Utils.AddOrUpdateDictionary(ref _data, "Lightness", lightness);
-                Utils.AddOrUpdateDictionary(ref _data, "MaxR", histograms['R'].Max());
-                Utils.AddOrUpdateDictionary(ref _data, "MaxG", histograms['G'].Max());
-                Utils.AddOrUpdateDictionary(ref _data, "MaxB", histograms['B'].Max());
+                Utils.AddOrUpdateDictionary(ref _data, "MaxR", _histograms['R'].Max());
+                Utils.AddOrUpdateDictionary(ref _data, "MaxG", _histograms['G'].Max());
+                Utils.AddOrUpdateDictionary(ref _data, "MaxB", _histograms['B'].Max());
             }
-        }
-
-        private void OpenCamToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _devices[toolStripComboBox1.SelectedItem.ToString()].Start(toolStripComboBox1.SelectedItem, DelegateMethodDriver);
         }
 
         private void CloseCamToolStripMenuItem_Click(object sender, EventArgs e)
@@ -268,51 +299,61 @@ namespace WebcamLightMeter
             if (_devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
             {
                 _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
-                _gaussTimer.Stop();
+                _chartRefresh?.Stop();
+                _gaussTimer?.Stop();
+                _chartRGB.Clear();
+                _chartLightness.Clear();
+                _chartXLine.Clear();
+                _chartYLine.Clear();
+                richTextBox1.Clear();
                 pictureBoxStream.Image = null;
                 pictureBoxStream.Invalidate();
+                pictureBoxSnap.Image = null;
+                pictureBoxSnap.Invalidate();
+                textBoxPosition.Clear();
+                Refresh();
             }
         }
 
         private void SaveThePictureToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if (pictureBoxSnap.Image != null)
-            //{
-            //    saveAvi = new SaveFileDialog();
-            //    saveAvi.Filter = "Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif|JPEG Image (.jpeg)|*.jpeg|Png Image (.png)|*.png|Tiff Image (.tiff)|*.tiff|Wmf Image (.wmf)|*.wmf";
-            //    if (saveAvi.ShowDialog() == DialogResult.OK)
-            //    {
-            //        pictureBoxSnap.Image.Save(saveAvi.FileName);
-            //        MessageBox.Show("The photo has saved.", "Success", MessageBoxButtons.OK);
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("The photo couldn't save.", "Fail", MessageBoxButtons.OK);
-            //    }
-            //}
+            if (pictureBoxStream.Image != null)
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif|JPEG Image (.jpeg)|*.jpeg|Png Image (.png)|*.png|Tiff Image (.tiff)|*.tiff|Wmf Image (.wmf)|*.wmf";
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    pictureBoxStream.Image.Save(saveFileDialog.FileName);
+                    MessageBox.Show("The photo has saved.", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                    MessageBox.Show("Error during save the photo", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void PictureBoxStream_Click(object sender, EventArgs e)
         {
-            Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
-            if (bitmap == null)
+            //Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
+            _followLight = false;
+            if (_bitmap == null)
                 return;
 
+            Bitmap bitmap = (Bitmap)_bitmap.Clone();
             //Calculate the position on bitmap
             float x0 = 0;
             float y0 = 0;
             float bitmapW = pictureBoxStream.Width;
             float bitmapH = pictureBoxStream.Height;
-            if ((float)pictureBoxStream.Width / (float)pictureBoxStream.Height < (float)bitmap.Width / (float)bitmap.Height)
+            if (pictureBoxStream.Width / (float)pictureBoxStream.Height < bitmap.Width / (float)bitmap.Height)
             {
-                bitmapW = (float)pictureBoxStream.Width;
-                bitmapH = bitmapW * (float)bitmap.Height / (float)bitmap.Width;
+                bitmapW = pictureBoxStream.Width;
+                bitmapH = bitmapW * bitmap.Height / bitmap.Width;
                 y0 = (float)(pictureBoxStream.Height - bitmapH) / 2;
             }
-            else if ((float)pictureBoxStream.Width / (float)pictureBoxStream.Height > (float)bitmap.Width / (float)bitmap.Height)
+            else if (pictureBoxStream.Width / (float)pictureBoxStream.Height > bitmap.Width / (float)bitmap.Height)
             {
-                bitmapH = (float)pictureBoxStream.Height;
-                bitmapW = bitmapH * (float)bitmap.Width / (float)bitmap.Height;
+                bitmapH = pictureBoxStream.Height;
+                bitmapW = bitmapH * bitmap.Width / bitmap.Height;
                 x0 = (float)(pictureBoxStream.Width - bitmapW) / 2;
             }
 
@@ -323,13 +364,11 @@ namespace WebcamLightMeter
             x *= bitmap.Width / bitmapW;
             y *= bitmap.Height / bitmapH;
 
-            textBoxPosition.Text = "X: " + x.ToString() + "; " + "Y: " + y.ToString();
-
-            _gaussPosition = new System.Drawing.Point((int)x, (int)y);
+            _gaussPosition = new Point((int)x, (int)y);
             ChangeTimerGaussParameters((int)x, (int)y);
         }
 
-        private void ChangeTimerGaussParameters(int x, int y)
+        private void ChangeTimerGaussParameters(float x, float y)
         {
             _gaussTimer?.Stop();
             _gaussTimer?.Dispose();
@@ -337,46 +376,55 @@ namespace WebcamLightMeter
             _gaussTimer.Interval = _gaussRefreshTime;
             _gaussTimer.Tick += (s, ea) =>
             {
-                Bitmap bitmap = (Bitmap)pictureBoxStream.Image.Clone();
-                Dictionary<string, List<double>> fitting = Analyzer.GaussianFittingXY(bitmap, x, y, (int)_gaussSize);
+                textBoxPosition.Text = "X: " + x.ToString() + "; " + "Y: " + y.ToString();
+                Bitmap bitmap = (Bitmap)_bitmap.Clone();
+                Dictionary<string, List<double>> fitting = Analyzer.GaussianFittingXY(bitmap, (int)x, (int)y, (int)_gaussSize);
 
                 //Refresh crop
-                Bitmap bmpImage = new Bitmap(bitmap);
+                Bitmap cropImage = new Bitmap(bitmap);
                 Rectangle rect = new Rectangle((int)((x - _gaussSize / 2) < 0 ? 0 : (x - _gaussSize / 2)), (int)((y - _gaussSize / 2) < 0 ? 0 : (y - _gaussSize / 2)), (int)_gaussSize, (int)_gaussSize);
-                bmpImage = bmpImage.Clone(rect, bmpImage.PixelFormat);
+                if (rect.X + rect.Width > bitmap.Width || rect.Y + rect.Height > bitmap.Height)
+                {
+                    rect.Width = Math.Min(bitmap.Width - rect.X, bitmap.Height - rect.Y);
+                    rect.Height = rect.Width;
+                    _gaussSize = rect.Height;
+                }
+                cropImage = cropImage.Clone(rect, cropImage.PixelFormat);
 
                 BeginInvoke((Action)(() =>
                 {
-                    pictureBoxSnap.Image = bmpImage;
+                    pictureBoxSnap.Image = cropImage;
 
-                    chartXLine.Clear();
+                    _chartXLine.Clear();
                     List<List<double>> input = new List<List<double>>();
                     input.Add(fitting["xLine"]);
                     input.Add(fitting["gXLine"]);
-                    chartXLine.Values = input;
-                    chartXLine.Draw();
+                    _chartXLine.Values = input;
+                    _chartXLine.Draw();
                     splitContainer3.Panel1.Controls.Clear();
-                    splitContainer3.Panel1.Controls.Add(chartXLine);
+                    splitContainer3.Panel1.Controls.Add(_chartXLine);
 
-                    chartYLine.Clear();
+                    _chartYLine.Clear();
                     input = new List<List<double>>();
                     input.Add(fitting["yLine"]);
                     input.Add(fitting["gYLine"]);
-                    chartYLine.Values = input;
-                    chartYLine.Draw();
+                    _chartYLine.Values = input;
+                    _chartYLine.Draw();
                     splitContainer3.Panel2.Controls.Clear();
-                    splitContainer3.Panel2.Controls.Add(chartYLine);
+                    splitContainer3.Panel2.Controls.Add(_chartYLine);
 
                 }));
 
                 if (_followLight)
                 {
-                    Point newPosition = Analyzer.FollowLight(bitmap, x, y);
+                    Point newPosition = Analyzer.FollowLight((Bitmap)cropImage.Clone(), (int)x, (int)y, (int)_gaussSize);
+                    if (newPosition != new Point(x, y))
+                        ChangeTimerGaussParameters(newPosition.X, newPosition.Y);
                 }
             };
             _gaussTimer.Start();
         }
-        
+
         private void DataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (dataToolStripMenuItem.Text == "Start acquire data")
@@ -417,8 +465,18 @@ namespace WebcamLightMeter
 
         private void FollowLightToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FollowLightForm followLightForm = new FollowLightForm();
-            followLightForm.Show();
+            if (_gaussPosition == new Point())
+            {
+                MessageBox.Show("Select a point to follow", "WebcamLightMeter", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            _followLight = !_followLight;
+        }
+
+        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form1_FormClosing(null, null);
         }
     }
 }

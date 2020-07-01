@@ -12,15 +12,19 @@
     /// </summary>
     public class Chart : PictureBox
     {
+        private Graphics _grf;
+        private readonly List<List<double>> _values;
+        
         public enum ChartType
         {
             Lines,
-            Bars
+            Bars,
+            Points
         };
 
         public Chart(int width, int height)
         {
-            values = new List<List<double>>();
+            _values = new List<List<double>>();
             Width = width;
             Height = height;
             FrameWidth = 50;
@@ -49,24 +53,24 @@
         /// </summary>
         public void Draw()
         {
-            grf.DrawRectangle(new Pen(BackColor), new Rectangle(0, 0, Width, Height));
+            _grf.DrawRectangle(new Pen(BackColor), new Rectangle(0, 0, Width, Height));
             DrawTitle();
             DrawAxis();
 
-            for (int i = 0; i < values.Count; i++)
-                DrawData(values[i], i);
+            for (int i = 0; i < _values.Count; i++)
+                DrawData(_values[i], i);
 
             DrawLegends();
         }
 
         public void Clear()
         {
-            grf.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
+            _grf.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
         }
 
         private void DrawTitle()
         {
-            grf.DrawString(Title, LegendFont, LegendPen.Brush, new PointF(FramedOrgPosition.X - 20, FramedOrgPosition.Y - 30));
+            _grf.DrawString(Title, LegendFont, LegendPen.Brush, new PointF(FramedOrgPosition.X - 20, FramedOrgPosition.Y - 30));
         }
 
         private void DrawLegends()
@@ -76,34 +80,39 @@
                 FormatFlags = StringFormatFlags.DirectionVertical
             };
 
-            int legendXWidth = (int)grf.MeasureString(LegendX, LegendFont).Width;
-            int legendYHeight = (int)grf.MeasureString(LegendY, LegendFont, new Size(Width, Height), verticalDrawFmt).Height;
+            int legendXWidth = (int)_grf.MeasureString(LegendX, LegendFont).Width;
+            int legendYHeight = (int)_grf.MeasureString(LegendY, LegendFont, new Size(Width, Height), verticalDrawFmt).Height;
 
-            grf.DrawString(LegendX, LegendFont, LegendPen.Brush, new Point((Width - legendXWidth) / 2, FramedEndPosition.Y + 5));
-            grf.DrawString(LegendY, LegendFont, LegendPen.Brush, new Point(FramedOrgPosition.X - (FrameWidth / 2), (Height - legendYHeight) / 2), verticalDrawFmt);
+            _grf.DrawString(LegendX, LegendFont, LegendPen.Brush, new Point((Width - legendXWidth) / 2, FramedEndPosition.Y + 5));
+            _grf.DrawString(LegendY, LegendFont, LegendPen.Brush, new Point(FramedOrgPosition.X - (FrameWidth / 2), (Height - legendYHeight) / 2), verticalDrawFmt);
         }
 
         private void DrawData(List<double> values, int seriesIndex)
         {
             int numValues = values.Count;
             PointF p = DataOrgPosition;
-            int xGap = GraphWidth / (numValues + 1);
+            double xGap = GraphWidth / ((double)numValues + 1);
             int baseLine = DataOrgPosition.Y;
 
             double[] normalizedData = NormalizeData(values);
             for (int i = 0; i < numValues; ++i)
             {
                 string tag = values[i].ToString();
-                int tagWidth = (int)grf.MeasureString(tag, DataFont).Width;
-                var nextPoint = new PointF(p.X + xGap, (float)(baseLine - normalizedData[i]));
+                int tagWidth = (int)_grf.MeasureString(tag, DataFont).Width;
+                var nextPoint = new PointF((float)(p.X + xGap), (float)(baseLine - normalizedData[i]));
 
                 if (Type == ChartType.Bars)
+                {
                     p = new PointF(nextPoint.X, baseLine);
-
-                grf.DrawLine(DataPen[seriesIndex], p, nextPoint);
+                    _grf.DrawLine(DataPen[seriesIndex], p, nextPoint);
+                }
+                else if (Type == ChartType.Lines)
+                    _grf.DrawLine(DataPen[seriesIndex], p, nextPoint);
+                else if (Type == ChartType.Points)
+                    throw new NotImplementedException();
 
                 if (DrawString)
-                    grf.DrawString(tag, DataFont, DataPen[seriesIndex].Brush, new PointF(nextPoint.X - tagWidth, nextPoint.Y));
+                    _grf.DrawString(tag, DataFont, DataPen[seriesIndex].Brush, new PointF(nextPoint.X - tagWidth, nextPoint.Y));
 
                 p = nextPoint;
             }
@@ -112,28 +121,28 @@
         private void DrawAxis()
         {
             // Y axis
-            grf.DrawLine(AxisPen, FramedOrgPosition, new Point(FramedOrgPosition.X, FramedEndPosition.Y));
+            _grf.DrawLine(AxisPen, FramedOrgPosition, new Point(FramedOrgPosition.X, FramedEndPosition.Y));
 
             // X axis
-            grf.DrawLine(AxisPen, new Point(FramedOrgPosition.X, FramedEndPosition.Y), FramedEndPosition);
+            _grf.DrawLine(AxisPen, new Point(FramedOrgPosition.X, FramedEndPosition.Y), FramedEndPosition);
 
             int width = FramedEndPosition.X - FramedOrgPosition.X;
             for (int i = 1; i <= NYAxis; i++)
-                grf.DrawLine(AxisPen, FramedOrgPosition.X + i * (width / NYAxis), FramedOrgPosition.Y, FramedOrgPosition.X + i * (width / NYAxis), FramedEndPosition.Y);
+                _grf.DrawLine(AxisPen, FramedOrgPosition.X + i * (width / NYAxis), FramedOrgPosition.Y, FramedOrgPosition.X + i * (width / NYAxis), FramedEndPosition.Y);
         }
 
         private void Build()
         {
             Bitmap bmp = new Bitmap(Width, Height);
             Image = bmp;
-            grf = Graphics.FromImage(bmp);
+            _grf = Graphics.FromImage(bmp);
         }
 
         private double[] NormalizeData(List<double> values)
         {
             values = IsLogarithmic ? values.Select(x => x = ((x == 0) ? 0 : Math.Log10(x))).ToList() : values;
             int maxHeight = DataOrgPosition.Y - FrameWidth;
-            double maxValue = values.Max();
+            double maxValue = 1.2 * values.Max();
 
             double[] normalizedData = values.ToArray();
 
@@ -151,13 +160,13 @@
         {
             get
             {
-                return values;
+                return _values;
             }
             set
             {
-                values.Clear();
+                _values.Clear();
                 for (int i = 0; i < value.Count; i++)
-                    values.Add(value[i]);
+                    _values.Add(value[i]);
             }
         }
 
@@ -315,9 +324,5 @@
         {
             get; set;
         }
-
-        private Graphics grf;
-        private readonly List<List<double>> values;
-        //private double[] normalizedData;
     }
 }

@@ -101,6 +101,9 @@
     <EmbeddedResource Include="CalibrationForm.resx">
       <DependentUpon>CalibrationForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FollowLightForm.resx">
+      <DependentUpon>FollowLightForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MasterForm.resx">
       <DependentUpon>MasterForm.cs</DependentUpon>
     </EmbeddedResource>

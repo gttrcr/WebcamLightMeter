@@ -50,5 +50,13 @@ namespace LightAnalyzer
             yIntercept = meanY - ((sCo / ssX) * meanX);
             slope = sCo / ssX;
         }
+
+        public static bool RangePercEqual(double a, double b, double perc)
+        {
+            if (a + perc * a / 200.0 >= b && a - perc * a / 200.0 <= b)
+                return true;
+
+            return false;
+        }
     }
 }

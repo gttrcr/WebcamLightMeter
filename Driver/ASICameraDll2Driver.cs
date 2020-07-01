@@ -228,7 +228,7 @@ namespace Driver
 
                 public string Name
                 {
-                    get { return Encoding.ASCII.GetString(name).TrimEnd((Char)0); }
+                    get { return Encoding.ASCII.GetString(name).TrimEnd((char)0); }
                 }
             };
 
@@ -250,12 +250,12 @@ namespace Driver
 
                 public string Name
                 {
-                    get { return Encoding.ASCII.GetString(name).TrimEnd((Char)0); }
+                    get { return Encoding.ASCII.GetString(name).TrimEnd((char)0); }
                 }
 
                 public string Description
                 {
-                    get { return Encoding.ASCII.GetString(description).TrimEnd((Char)0); }
+                    get { return Encoding.ASCII.GetString(description).TrimEnd((char)0); }
                 }
             }
 
@@ -265,7 +265,7 @@ namespace Driver
                 public byte[] id;
                 public string ID
                 {
-                    get { return Encoding.ASCII.GetString(id).TrimEnd((Char)0); }
+                    get { return Encoding.ASCII.GetString(id).TrimEnd((char)0); }
                 }
             }
 

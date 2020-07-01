@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Accord;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebcamLightMeter
 {
@@ -12,6 +14,14 @@ namespace WebcamLightMeter
                 dictionary[key].Add(new Tuple<string, double>(dateTime, value));
             else
                 dictionary.Add(key, new List<Tuple<string, double>>() { new Tuple<string, double>(dateTime, value) });
+        }
+
+        public static string BeaufityStringOutput(Dictionary<string, double> outputDictionary, string title)
+        {
+            string ret = title + Environment.NewLine + Environment.NewLine;
+            for (int i = 0; i < outputDictionary.Keys.Count; i++)
+                ret += outputDictionary.Keys.ElementAt(i) + ": " + outputDictionary[outputDictionary.Keys.ElementAt(i)] + Environment.NewLine;
+            return ret;
         }
     }
 }

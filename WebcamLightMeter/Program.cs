@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace WebcamLightMeter
@@ -16,7 +14,11 @@ namespace WebcamLightMeter
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SplashScreen());
+
+            if (Debugger.IsAttached)
+                Application.Run(new MasterForm());
+            else
+                Application.Run(new SplashScreen());
         }
     }
 }
