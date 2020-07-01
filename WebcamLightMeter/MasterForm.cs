@@ -296,7 +296,7 @@ namespace WebcamLightMeter
 
         private void CloseCamToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
+            if (toolStripComboBox1.SelectedItem != null && _devices[toolStripComboBox1.SelectedItem.ToString()].IsRunning())
             {
                 _devices[toolStripComboBox1.SelectedItem.ToString()].Stop();
                 _chartRefresh?.Stop();
