@@ -14,7 +14,7 @@
     {
         private Graphics _grf;
         private readonly List<List<double>> _values;
-        
+
         public enum ChartType
         {
             Lines,
@@ -46,26 +46,6 @@
              {
                  Build();
              };
-        }
-
-        /// <summary>
-        /// Redraws the chart
-        /// </summary>
-        public void Draw()
-        {
-            _grf.DrawRectangle(new Pen(BackColor), new Rectangle(0, 0, Width, Height));
-            DrawTitle();
-            DrawAxis();
-
-            for (int i = 0; i < _values.Count; i++)
-                DrawData(_values[i], i);
-
-            DrawLegends();
-        }
-
-        public void Clear()
-        {
-            _grf.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
         }
 
         private void DrawTitle()
@@ -150,6 +130,26 @@
                 normalizedData[i] = (values[i] * maxHeight) / maxValue;
 
             return normalizedData;
+        }
+
+        /// <summary>
+        /// Redraws the chart
+        /// </summary>
+        public void Draw()
+        {
+            _grf.DrawRectangle(new Pen(BackColor), new Rectangle(0, 0, Width, Height));
+            DrawTitle();
+            DrawAxis();
+
+            for (int i = 0; i < _values.Count; i++)
+                DrawData(_values[i], i);
+
+            DrawLegends();
+        }
+
+        public void Clear()
+        {
+            _grf.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
         }
 
         /// <summary>
