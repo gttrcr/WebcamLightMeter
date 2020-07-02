@@ -273,151 +273,151 @@ namespace Driver
 
             #region PRIVATE_FUNCTION
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetNumOfConnectedCameras", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetNumOfConnectedCameras", CallingConvention = CallingConvention.Cdecl)]
             private static extern int ASIGetNumOfConnectedCameras32();
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetNumOfConnectedCameras", CallingConvention = CallingConvention.Cdecl)]
             private static extern int ASIGetNumOfConnectedCameras64();
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetCameraProperty", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetCameraProperty", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetCameraProperty32(out ASI_CAMERA_INFO pASICameraInfo, int iCameraIndex);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetCameraProperty", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetCameraProperty64(out ASI_CAMERA_INFO pASICameraInfo, int iCameraIndex);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIOpenCamera", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIOpenCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIOpenCamera32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIOpenCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIOpenCamera64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIInitCamera", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIInitCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIInitCamera32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIInitCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIInitCamera64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASICloseCamera", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASICloseCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASICloseCamera32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASICloseCamera", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASICloseCamera64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetNumOfControls", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetNumOfControls", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetNumOfControls32(int iCameraID, out int piNumberOfControls);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetNumOfControls", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetNumOfControls64(int iCameraID, out int piNumberOfControls);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetControlCaps", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetControlCaps", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetControlCaps32(int iCameraID, int iControlIndex, out ASI_CONTROL_CAPS pControlCaps);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetControlCaps", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetControlCaps64(int iCameraID, int iControlIndex, out ASI_CONTROL_CAPS pControlCaps);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASISetControlValue", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASISetControlValue", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetControlValue32(int iCameraID, ASI_CONTROL_TYPE ControlType, int lValue, ASI_BOOL bAuto);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASISetControlValue", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetControlValue64(int iCameraID, ASI_CONTROL_TYPE ControlType, int lValue, ASI_BOOL bAuto);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetControlValue", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetControlValue", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetControlValue32(int iCameraID, ASI_CONTROL_TYPE ControlType, out int plValue, out ASI_BOOL pbAuto);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetControlValue", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetControlValue64(int iCameraID, ASI_CONTROL_TYPE ControlType, out int plValue, out ASI_BOOL pbAuto);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASISetROIFormat", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASISetROIFormat", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetROIFormat32(int iCameraID, int iWidth, int iHeight, int iBin, ASI_IMG_TYPE Img_type);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASISetROIFormat", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetROIFormat64(int iCameraID, int iWidth, int iHeight, int iBin, ASI_IMG_TYPE Img_type);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetROIFormat", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetROIFormat", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetROIFormat32(int iCameraID, out int piWidth, out int piHeight, out int piBin, out ASI_IMG_TYPE pImg_type);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetROIFormat", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetROIFormat64(int iCameraID, out int piWidth, out int piHeight, out int piBin, out ASI_IMG_TYPE pImg_type);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASISetStartPos", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASISetStartPos", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetStartPos32(int iCameraID, int iStartX, int iStartY);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASISetStartPos", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetStartPos64(int iCameraID, int iStartX, int iStartY);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetStartPos", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetStartPos", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetStartPos32(int iCameraID, out int piStartX, out int piStartY);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetStartPos", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetStartPos64(int iCameraID, out int piStartX, out int piStartY);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIStartVideoCapture", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIStartVideoCapture", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStartVideoCapture32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIStartVideoCapture", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStartVideoCapture64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIStopVideoCapture", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIStopVideoCapture", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStopVideoCapture32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIStopVideoCapture", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStopVideoCapture64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetVideoData", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetVideoData", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetVideoData32(int iCameraID, IntPtr pBuffer, int lBuffSize, int iWaitms);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetVideoData", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetVideoData64(int iCameraID, IntPtr pBuffer, int lBuffSize, int iWaitms);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIPulseGuideOn", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIPulseGuideOn", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIPulseGuideOn32(int iCameraID, ASI_GUIDE_DIRECTION direction);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIPulseGuideOn", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIPulseGuideOn64(int iCameraID, ASI_GUIDE_DIRECTION direction);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIPulseGuideOff", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIPulseGuideOff", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIPulseGuideOff32(int iCameraID, ASI_GUIDE_DIRECTION direction);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIPulseGuideOff", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIPulseGuideOff64(int iCameraID, ASI_GUIDE_DIRECTION direction);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIStartExposure", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIStartExposure", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStartExposure32(int iCameraID, ASI_BOOL bIsDark);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIStartExposure", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStartExposure64(int iCameraID, ASI_BOOL bIsDark);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIStopExposure", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIStopExposure", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStopExposure32(int iCameraID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIStopExposure", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIStopExposure64(int iCameraID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetExpStatus", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetExpStatus", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetExpStatus32(int iCameraID, out ASI_EXPOSURE_STATUS pExpStatus);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetExpStatus", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetExpStatus64(int iCameraID, out ASI_EXPOSURE_STATUS pExpStatus);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetDataAfterExp", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetDataAfterExp", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetDataAfterExp32(int iCameraID, IntPtr pBuffer, int lBuffSize);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetDataAfterExp", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetDataAfterExp64(int iCameraID, IntPtr pBuffer, int lBuffSize);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetGainOffset", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetGainOffset", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetGainOffset32(int iCameraID, out int Offset_HighestDR, out int Offset_UnityGain, out int Gain_LowestRN, out int Offset_LowestRN);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetGainOffset", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetGainOffset64(int iCameraID, out int Offset_HighestDR, out int Offset_UnityGain, out int Gain_LowestRN, out int Offset_LowestRN);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASIGetID", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASIGetID", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetID32(int iCameraID, out ASI_ID pID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASIGetID", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASIGetID64(int iCameraID, out ASI_ID pID);
 
-            [DllImport("ASICamera2.dll", EntryPoint = "ASISetID", CallingConvention = CallingConvention.Cdecl)]
+            [DllImport("ASICamera2_x86.dll", EntryPoint = "ASISetID", CallingConvention = CallingConvention.Cdecl)]
             private static extern ASI_ERROR_CODE ASISetID32(int iCameraID, ASI_ID ID);
 
             [DllImport("ASICamera2_x64.dll", EntryPoint = "ASISetID", CallingConvention = CallingConvention.Cdecl)]
